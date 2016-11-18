@@ -41,3 +41,15 @@
 ### returns
 - vector with lentgh = ncol(data), each element describing the type of detected missingness for each column of the data. Possible values "NONE", "MCAR", "MAR" or "MNAR"
 
+## select_imputation(data, miss)
+
+### arguments
+
+- data : data matrix of the data to be analyzed for missingness
+- miss : vector of strings  describing the type of detected missingness for each column of the data. Possible values "NONE", "MCAR", "MAR" or "MNAR"
+
+### returns
+
+- data matrix with the missing values imputed
+ 
+
