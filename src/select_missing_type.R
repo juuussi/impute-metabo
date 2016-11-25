@@ -9,7 +9,7 @@ select_missing_type <- function(data,type,alphaP){
     mcar <- rbinom(N,1,prob=alphaP)
     #simulate MCAR data
     simulation <-data*(1-mcar)+mcar*99999  
-    simulation[simulation==99999]=NA                  #change 99999 to NA (R's notation for missing)
+    simulation[simulation==99999] <- NA   #change 99999 to NA (R's notation for missing)
     
   }
   else if (type == 2){
@@ -17,16 +17,25 @@ select_missing_type <- function(data,type,alphaP){
     # create a depedence (missing is dependent on the observed values)
     mean_mar <- mean(x=data)
     sd_mar  <- sd(x=data)
-    cut   <- mean_mar+sd_mar*qnorm(alphaP)
+    threshold   <- mean_mar+sd_mar*qnorm(alphaP)
     # simulate MAR data
     simulation <-  data
-    simulation[simulation<cut] <- NA
+    simulation[simulation>threshold] <- NA
   
   }
 
-  # else if (type == 3){
-  #   simulation
-  # }
+  else if (type == 3){
+    # mnar: missing not at random
+    # dependence of missingness in both observed and unobserved values
+    mean_mnar <- colMeans(x=data)
+    sd_mnar  <- apply(x=data, 2, sd)
+    cut1   <- mean_mnar+sd_mnar*qnorm(alphaP)
+    cut2   <- mean_mnar-sd_mnar*qnorm(alphaP)
+    threshold <- cbind(cut1,cut2)
+    # simulate MNAR
+    simulation <-  data
+    simulation[simulation > min(threshold) |simulation > max(threshold) ] <- NA
+    }
   # 
   # else if (type = 4){
   #   simulation
