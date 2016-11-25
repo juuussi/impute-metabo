@@ -20,7 +20,7 @@ select_missing_type <- function(data,type,alphaP){
     threshold   <- mean_mar+sd_mar*qnorm(alphaP)
     # simulate MAR data
     simulation <-  data
-    simulation[simulation>threshold] <- NA
+    simulation[simulation >threshold] <- NA
   
   }
 
