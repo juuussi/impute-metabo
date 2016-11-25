@@ -1,7 +1,19 @@
-
+#' Title: select_missing_type
+# simulates the three types of missing data (mcar,mnar,mar)
+# and the choice of different percentages of missingness 
+#' @param data matrix to be used as reference
+#' @param type indicates the type of missing data 1 == MCAR ,2 == MAR,3 == MNAR 
+#' @param alphaP percentage of missingness
+#'
+#' @return data matrix with the missing values 
+#' @export
+#'
+#' @examples
 select_missing_type <- function(data,type,alphaP){
+  
   ## a function that simulates the three types of missing data (mcar,mnar,mar)
   ## choice of different percentages of missingness 
+  
   
   N <- length(simulated_data)
   if (type == 1){
@@ -26,7 +38,7 @@ select_missing_type <- function(data,type,alphaP){
 
   else if (type == 3){
     # mnar: missing not at random
-    # dependence of missingness in both observed and unobserved values
+    # dependence of missingness in both observed and unobserved values(left censored)
     mean_mnar <- colMeans(x=data)
     sd_mnar  <- apply(x=data, 2, sd)
     cut1   <- mean_mnar+sd_mnar*qnorm(alphaP)
@@ -36,10 +48,6 @@ select_missing_type <- function(data,type,alphaP){
     simulation <-  data
     simulation[simulation > min(threshold) |simulation > max(threshold) ] <- NA
     }
-  # 
-  # else if (type = 4){
-  #   simulation
-  # }
   
   return  (simulation)
   
