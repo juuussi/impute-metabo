@@ -16,6 +16,8 @@ select_missing_type <- function(data,type,alphaP){
   
   
   N <- length(simulated_data)
+  M <-ncol(simulated_data)
+  
   if (type == 1){
   # mcar(missingness is random,flip of a coin)
     mcar <- rbinom(N,1,prob=alphaP)
@@ -40,13 +42,15 @@ select_missing_type <- function(data,type,alphaP){
     # mnar: missing not at random
     # dependence of missingness in both observed and unobserved values(left censored)
     mean_mnar <- colMeans(x=data)
-    sd_mnar  <- apply(x=data, 2, sd)
+    sd_mnar  <- apply(data, 2, sd)
     cut1   <- mean_mnar+sd_mnar*qnorm(alphaP)
     cut2   <- mean_mnar-sd_mnar*qnorm(alphaP)
     threshold <- cbind(cut1,cut2)
     # simulate MNAR
     simulation <-  data
-    simulation[simulation > min(threshold) |simulation > max(threshold) ] <- NA
+    for (i in 1:M){
+    simulation[simulation[,i] > threshold[,1],i] <- NA
+    }
     }
   
   return  (simulation)
