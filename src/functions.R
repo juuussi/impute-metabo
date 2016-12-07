@@ -21,3 +21,101 @@ simulate_data <- function(data, nrow, ncol, ...) {
 
   simulated_data
 }
+
+
+#' Title compare_results
+#'
+#' @param x data matrix
+#' @param y data matrix
+#'
+#' @return data frame contains results from the correlation and p-values
+#' @export
+#'
+#' @examples
+compare_results <- function(x, y) {
+  c <- cor.test(as.vector(x), as.vector(y))
+  data.frame(Cor=c$estimate, CorP=c$p.value)
+  
+  
+}
+
+
+
+
+#' Title simulate_missingness
+#'
+#' @param data matrix with simulated data
+#' @param mcar percenatge of missigness in Missing Completly at Random 
+#' @param mar percenatge of missigness in Missing at Random 
+#' @param mnar percenatge of missignessMisiing not at Random 
+#' @param mnar.type type of trancation 'left' or right
+#'
+#' @return simulated_data
+#' @export
+#'
+#' @examples miss_data <- simulate_missingness(data=simulated_data, mcar=0.01)
+simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") {
+  
+  if(class(data) != "matrix") {
+    stop("Variable data should be a matrix.")
+  }
+  
+  if (mcar > 0){
+    mcar_distribution   = runif(nrow(data)*ncol(data), min=0, max=1)
+    simulated_data = matrix(ifelse(mcar_distribution<mcar, NA, data), nrow=nrow(data), ncol=ncol(data))
+    
+  }
+  
+  simulated_data
+  
+}
+
+
+
+#' Title
+#'
+#' @param data data matrix with simulated data
+#' @param methods vector containing the method names 
+#'
+#' @return the matrix containing the imputed data
+#' @export
+#'
+#' @examples imputation_methods <- c("RF", "mean", "min")
+#' imputed_data <- impute(data=miss_data, methods=imputation_methods)
+impute <- function(data, methods) {
+  
+  require(missForest)
+  
+  if (length(methods) != 1 & length(methods) != ncol(data)) {
+    stop("Methods needs to be either one value or of the same length as number of columns in data.")
+  }
+  
+  imputed_data <- data
+  
+  if (length(methods) == 1) {
+    methods <- rep(methods, times=ncol(data))
+  }
+  
+  if ("RF" %in% methods) {
+    rf_imputed_data <- missForest::missForest(xmis = data)$ximp
+    index <- which(methods == "RF")
+    imputed_data[,index] <- rf_imputed_data[,index]
+  }
+  
+  foreach (data_column=1:ncol(data)) %do% {
+    method <- methods[data_column]
+    
+    if (method == "mean") {
+      impu_value <- mean(data[,data_column], na.rm=TRUE)
+      imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+    }
+    
+    if (method == "min") {
+      impu_value <- min(data[,data_column], na.rm=TRUE)
+      imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+    }
+  }
+  
+  imputed_data
+  
+}
