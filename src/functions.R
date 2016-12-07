@@ -24,14 +24,15 @@ simulate_data <- function(data, nrow, ncol, ...) {
 
 
 #' Title compare_results
-#'
+#' Calculates the correlation between two matrices/ we use it to evaluate the different 
+#' impuatation methods
 #' @param x data matrix
 #' @param y data matrix
 #'
 #' @return data frame contains results from the correlation and p-values
 #' @export
 #'
-#' @examples
+#' @examples compared_results <- compare_results(simulated_data, imputed_data)
 compare_results <- function(x, y) {
   c <- cor.test(as.vector(x), as.vector(y))
   data.frame(Cor=c$estimate, CorP=c$p.value)
@@ -43,7 +44,8 @@ compare_results <- function(x, y) {
 
 
 #' Title simulate_missingness
-#'
+#' Uses the simulated data to create the different types of missingness (MCAR,MNAR,MAR) 
+#' using different percentages of missigness
 #' @param data matrix with simulated data
 #' @param mcar percenatge of missigness in Missing Completly at Random 
 #' @param mar percenatge of missigness in Missing at Random 
@@ -72,8 +74,9 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
 
 
 
-#' Title
-#'
+#' Title impute
+#' This functions contains different imputation methods and imputes the data with all
+#' the different imputation methods 
 #' @param data data matrix with simulated data
 #' @param methods vector containing the method names 
 #'
