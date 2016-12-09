@@ -18,7 +18,7 @@ simulate_data <- function(data, nrow, ncol, ...) {
   require(MASS)
   
   simulated_data <- matrix(mvrnorm(n=nrow*ncol, mu=colMeans(reference_data), Sigma=cov(data), ...), nrow=nrow, ncol=ncol)
-
+  
   simulated_data
 }
 
@@ -35,6 +35,21 @@ simulate_data <- function(data, nrow, ncol, ...) {
 #' @examples compared_results <- compare_results(simulated_data, imputed_data)
 compare_results <- function(x, y) {
   c <- cor.test(as.vector(x), as.vector(y))
+  data.frame(Cor=c$estimate, CorP=c$p.value)
+  
+  
+}
+
+
+compare_results2 <- function(x, y, missing) {
+  missing_index <- which(is.na(as.vector(missing)))
+  x.val <- as.vector(x)[missing_index]
+  y.val <- as.vector(y)[missing_index]
+  flog.info(paste('missing:', paste(missing_index, collapse=", "), '\norig:', paste(x.val, collapse=", "),'\nimpu:', paste(y.val, collapse=", "),sep=' '))
+  
+  c <- cor.test(x.val, y.val)
+  
+  flog.info(paste("Cor:", c$estimate, "P:", c$p.value, sep=" "))
   data.frame(Cor=c$estimate, CorP=c$p.value)
   
   
