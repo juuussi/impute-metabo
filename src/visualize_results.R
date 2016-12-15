@@ -15,5 +15,6 @@ p <- ggplot(data=results, aes(Method, results_rmse))
 p <- p + geom_boxplot()
 p <- p + theme_bw() + facet_grid(.~Prop)
 
+
 p
 

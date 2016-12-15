@@ -74,5 +74,6 @@ full_results <- foreach(iteration=1:n_iterations, .combine="rbind") %do% {
   
 }
 
+
 full_results
 write.csv(x=full_results, file=paste0(path, "results/result.csv"), row.names=FALSE)

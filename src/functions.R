@@ -114,6 +114,7 @@ impute <- function(data, methods) {
     methods <- rep(methods, times=ncol(data))
   }
   
+  
   if ("RF" %in% methods) {
     rf_imputed_data <- missForest::missForest(xmis = data)$ximp
     index <- which(methods == "RF")
