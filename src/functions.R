@@ -120,6 +120,14 @@ impute <- function(data, methods) {
     imputed_data[,index] <- rf_imputed_data[,index]
   }
   
+   if ("BPCA" %in% methods) {
+     pc <- pcaMethods::pca(data,nPcs=5, method="ppca")
+     #index <- which(methods == "BPCA")
+     imputed_data <- completeObs(pc)
+     
+    
+  }
+  
   foreach (data_column=1:ncol(data)) %do% {
     method <- methods[data_column]
     
@@ -131,6 +139,7 @@ impute <- function(data, methods) {
     if (method == "min") {
       impu_value <- min(data[,data_column], na.rm=TRUE)
       imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+      
     }
   }
   
@@ -154,3 +163,4 @@ RMSE_simulated <- function(data1,data2,data3){
   sum((data1[is.na(data2)] - data3[is.na(data2)])^2) / sum(data1[is.na(data2)]^2)
   
 }
+
