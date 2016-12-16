@@ -5,7 +5,7 @@ library(doMC)
 library(futile.logger)
 library(pcaMethods)
 #####################
-registerDoMC(cores=1)
+registerDoMC(cores=15)
 
 path <- "~/projects/impute-metabo/"
 #output_path <- '/home/users/mariekok/projects/impute-metabo/results/result.csv'
@@ -21,12 +21,12 @@ set.seed(1406)
 
 n_iterations <- 2
 n_rows <- 150
-n_cols <- 10
+n_cols <- 50
 
 miss_proportions <- c(0.01, 0.05, 0.1, 0.2, 0.3)
 imputation_methods <- c("RF", "PPCA","mean", "min")
 
-full_results <- foreach(iteration=1:n_iterations, .combine="rbind") %do% {
+full_results <- foreach(iteration=1:n_iterations, .combine="rbind") %dopar% {
   
   flog.info(paste('ITERATION', iteration, sep=' '))
   
