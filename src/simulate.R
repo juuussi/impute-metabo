@@ -23,7 +23,7 @@ n_iterations <- 2
 n_rows <- 150
 n_cols <- 50
 
-miss_proportions <- c(0.01, 0.05, 0.1, 0.2, 0.3)
+miss_proportions <- c(0.01, 0.1, 0.2, 0.3, 0.6)
 imputation_methods <- c("RF", "PPCA","mean", "min")
 
 full_results <- foreach(iteration=1:n_iterations, .combine="rbind") %dopar% {
@@ -41,7 +41,7 @@ full_results <- foreach(iteration=1:n_iterations, .combine="rbind") %dopar% {
       #flog.info(paste('method', method, sep=' '))
       
       
-      miss_data <- simulate_missingness(data=simulated_data, mcar=prop)
+      miss_data <- simulate_missingness(data=simulated_data, mnar=prop)
       imputed_data <- impute(data=miss_data, methods=method)
       # #####################################################################
       # # COMPARING RESULTS USING CORRELATION

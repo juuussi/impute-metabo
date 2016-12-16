@@ -76,7 +76,7 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
   if(class(data) != "matrix") {
     stop("Variable data should be a matrix.")
   }
-  
+  simulated_data <- data
   if (mcar > 0){
     mcar_distribution   = runif(nrow(data)*ncol(data), min=0, max=1)
     simulated_data = matrix(ifelse(mcar_distribution<mcar, NA, data), nrow=nrow(data), ncol=ncol(data))
