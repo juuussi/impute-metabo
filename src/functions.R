@@ -125,7 +125,7 @@ impute <- function(data, methods) {
      # Do cross validation with ppca for component 2:10
      esti <- kEstimate(metaboliteData, method = "ppca", evalPcs = 2:10, nruncv=1, em="nrmsep")
      # The best result was obtained for this number of PCs:esti$bestNPcs
-     pc <- pcaMethods::pca(data,nPcs=esti$bestNPcs, method="ppca")
+     pc <- pcaMethods::pca(data,nPcs=esti$bestNPcs, method="bpca")
      #index <- which(methods == "BPCA")
      imputed_data <- completeObs(pc)
      
