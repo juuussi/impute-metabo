@@ -24,7 +24,7 @@ n_rows <- 150
 n_cols <- 10
 
 miss_proportions <- c(0.01, 0.05, 0.1, 0.2, 0.3)
-imputation_methods <- c("RF", "BPCA","mean", "min")
+imputation_methods <- c("RF", "PPCA","mean", "min")
 
 full_results <- foreach(iteration=1:n_iterations, .combine="rbind") %do% {
   
@@ -60,15 +60,13 @@ full_results <- foreach(iteration=1:n_iterations, .combine="rbind") %do% {
       results_rmse <- RMSE_simulated(data1 = simulated_data,data2 = miss_data,data3 = imputed_data)
       results_f <- cbind(data.frame(Method=method, Prop=prop, Iteration=iteration),results_rmse )
       
-      flog.info("**** CBIND DONE ****")
       results_f
       
       
     }
-    flog.info("combining results")
     method_results
   }  
-  flog.info("combining propotions")
+
   
   proportion_results
   
