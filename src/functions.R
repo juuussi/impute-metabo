@@ -81,7 +81,7 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
     mcar_distribution   = runif(nrow(data)*ncol(data), min=0, max=1)
     simulated_data = matrix(ifelse(mcar_distribution<mcar, NA, data), nrow=nrow(data), ncol=ncol(data))
   }
-    if (mnar > 0) {
+  if (mnar > 0) {
       added_mnar <- 0
       while (added_mnar < mnar) {
         
@@ -90,15 +90,22 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
         
         # What percentage of variable to set missing
         cut_percentage <- rchisq(1, df=1) / 30
+        
         if (cut_percentage > 1) {
           cut_percentage <- 1
         }
+        while (cut_percentage == 0) {
+          cut_percentage <- rchisq(1, df=1) / 30
+          
+        }
         
         # How many values to set missing
-        cut_index <- floor(cut_percentage * nrow(simulated_data))
-        sorted_variable <- sort(simulated_data[,variable_index])
+        cut_index <- ceiling(cut_percentage * nrow(simulated_data))
+        
+        (sorted_variable <- sort(simulated_data[,variable_index]))
         # Corresponding cut-off point for values
         cut_point <- sorted_variable[cut_index]
+        
         
         # Set values to missing
         simulated_data[simulated_data[,variable_index] < cut_point, variable_index] <- NA
@@ -106,8 +113,8 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
         # Counter to check how much MNAR missingness has been added to data
         added_mnar <- added_mnar + (cut_index-1) / (nrow(simulated_data) * ncol(simulated_data))
       }
-    }
-    
+  }
+  
   simulated_data
   
 }
