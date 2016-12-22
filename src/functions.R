@@ -100,9 +100,9 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
         }
         
         # How many values to set missing
-        cut_index <- ceiling(cut_percentage * nrow(simulated_data))
+        cut_index <- floor(cut_percentage * nrow(simulated_data))
         
-        (sorted_variable <- sort(simulated_data[,variable_index]))
+        sorted_variable <- sort(simulated_data[,variable_index])
         # Corresponding cut-off point for values
         cut_point <- sorted_variable[cut_index]
         
@@ -115,7 +115,7 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
       }
   }
   
-  simulated_data
+  list(simulated_data, added_mnar)
   
 }
 
@@ -185,18 +185,18 @@ impute <- function(data, methods) {
 
 
 
-#' Title RMSE_simulated
-#' Calculates the root mean square error between simulated(reference) data and imputed data
+#' Title MSE_simulated
+#' Calculates the  mean square error between simulated(reference) data and imputed data
 #' @param data1 = simulated data matrix
 #' @param data2 = data matrix with missing values
 #' @param data3 = imputed data matrix
 #'
 #' @return
-#' @export rmse
+#' @export error(mse)
 #'
 #' @examples
-RMSE_simulated <- function(data1,data2,data3){
-  sum((data1[is.na(data2)] - data3[is.na(data2)])^2) / sum(data1[is.na(data2)]^2)
-  
+MSE_simulated <- function(data1,data2,data3){
+  error <- sum((data1[is.na(data2)] - data3[is.na(data2)])^2) / sum(data1[is.na(data2)]^2)
+  error
 }
 
