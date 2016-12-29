@@ -1,3 +1,4 @@
+
 library(doMC)
 library(ggplot2)
 
@@ -7,14 +8,25 @@ path <- "~/projects/impute-metabo/"
 
 source(paste0(path,"src/functions.R"))
 
-results <- read.csv(paste0(path, "results/result.csv"), stringsAsFactors = FALSE)
-head(results)
-str(results)
 
-p <- ggplot(data=results, aes(Method, results_rmse))
-p <- p + geom_boxplot()
-p <- p + theme_bw() + facet_grid(.~Prop)
+fileNames <- Sys.glob(paste0(path,"results/","*.csv"))
 
 
-p
+for (fileName in fileNames){
+  
+  # read data
+  
+  results <- read.csv(fileName, stringsAsFactors = FALSE)
+  head(results)
+  str(results)
+  
+  p <- ggplot(data=results, aes(Method, results_rmse))
+  p <- p + geom_boxplot()
+  p <- p + theme_bw() + facet_grid(.~Prop)
+  
+  
+  ggsave(filename = paste0(fileName,".pdf") ,plot = p)
+  
+  
+}
 
