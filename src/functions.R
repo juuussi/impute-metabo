@@ -115,7 +115,7 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
       }
   }
   
-  list(simulated_data, added_mnar)
+  simulated_data
   
 }
 
@@ -195,8 +195,8 @@ impute <- function(data, methods) {
 #' @export error(mse)
 #'
 #' @examples
-MSE_simulated <- function(data1,data2,data3){
-  error <- sum((data1[is.na(data2)] - data3[is.na(data2)])^2) / sum(data1[is.na(data2)]^2)
+RMSE_simulated <- function(data1,data2,data3){
+  error <- sqrt(sum((data1[is.na(data2)] - data3[is.na(data2)])^2) /nrow(data1))
   error
 }
 
