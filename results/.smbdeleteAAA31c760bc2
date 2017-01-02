@@ -1,0 +1,437 @@
+WARN [2016-12-08 15:55:46] Hello, world
+INFO [2016-12-08 15:55:47] Hello, world
+DEBUG [2016-12-08 15:55:49] Goodbye, world
+DEBUG [2016-12-08 15:55:51] Goodbye, world
+INFO [2016-12-08 15:59:16] ITERATION 1
+INFO [2016-12-08 15:59:16] ITERATION 2
+INFO [2016-12-08 15:59:16] miss proportion 0.01
+INFO [2016-12-08 15:59:16] miss proportion 0.01
+INFO [2016-12-08 15:59:16] method RF
+INFO [2016-12-08 15:59:16] method RF
+INFO [2016-12-08 15:59:16] miss proportion 0.01
+INFO [2016-12-08 15:59:16] miss proportion 0.01
+INFO [2016-12-08 15:59:17] method mean
+INFO [2016-12-08 15:59:17] method mean
+INFO [2016-12-08 15:59:17] miss proportion 0.01
+INFO [2016-12-08 15:59:17] miss proportion 0.01
+INFO [2016-12-08 15:59:17] method min
+INFO [2016-12-08 15:59:17] method min
+INFO [2016-12-08 15:59:17] miss proportion 0.05
+INFO [2016-12-08 15:59:17] miss proportion 0.05
+INFO [2016-12-08 15:59:17] method RF
+INFO [2016-12-08 15:59:17] method RF
+INFO [2016-12-08 15:59:17] miss proportion 0.05
+INFO [2016-12-08 15:59:17] miss proportion 0.05
+INFO [2016-12-08 15:59:17] method mean
+INFO [2016-12-08 15:59:17] method mean
+INFO [2016-12-08 15:59:17] miss proportion 0.05
+INFO [2016-12-08 15:59:17] miss proportion 0.05
+INFO [2016-12-08 15:59:17] method min
+INFO [2016-12-08 15:59:17] method min
+INFO [2016-12-08 15:59:17] miss proportion 0.1
+INFO [2016-12-08 15:59:17] miss proportion 0.1
+INFO [2016-12-08 15:59:17] method RF
+INFO [2016-12-08 15:59:18] method RF
+INFO [2016-12-08 15:59:18] miss proportion 0.1
+INFO [2016-12-08 15:59:18] miss proportion 0.1
+INFO [2016-12-08 15:59:18] method mean
+INFO [2016-12-08 15:59:18] miss proportion 0.1
+INFO [2016-12-08 15:59:18] method mean
+INFO [2016-12-08 15:59:18] method min
+INFO [2016-12-08 15:59:18] miss proportion 0.1
+INFO [2016-12-08 15:59:18] miss proportion 0.2
+INFO [2016-12-08 15:59:18] method min
+INFO [2016-12-08 15:59:18] method RF
+INFO [2016-12-08 15:59:18] miss proportion 0.2
+INFO [2016-12-08 15:59:18] miss proportion 0.2
+INFO [2016-12-08 15:59:18] method mean
+INFO [2016-12-08 15:59:18] method RF
+INFO [2016-12-08 15:59:18] miss proportion 0.2
+INFO [2016-12-08 15:59:18] miss proportion 0.2
+INFO [2016-12-08 15:59:18] method min
+INFO [2016-12-08 15:59:18] method mean
+INFO [2016-12-08 15:59:18] miss proportion 0.3
+INFO [2016-12-08 15:59:18] miss proportion 0.2
+INFO [2016-12-08 15:59:18] method min
+INFO [2016-12-08 15:59:18] method RF
+INFO [2016-12-08 15:59:18] miss proportion 0.3
+INFO [2016-12-08 15:59:18] miss proportion 0.3
+INFO [2016-12-08 15:59:18] method RF
+INFO [2016-12-08 15:59:18] method mean
+INFO [2016-12-08 15:59:19] miss proportion 0.3
+INFO [2016-12-08 15:59:19] miss proportion 0.3
+INFO [2016-12-08 15:59:19] method min
+INFO [2016-12-08 15:59:19] method mean
+INFO [2016-12-08 15:59:19] miss proportion 0.3
+INFO [2016-12-08 15:59:19] method min
+INFO [2016-12-08 16:00:45] miss proportion 0.01
+INFO [2016-12-08 16:00:45] miss proportion 0.01
+INFO [2016-12-08 16:00:46] method RF
+INFO [2016-12-08 16:00:46] method RF
+INFO [2016-12-08 16:00:46] miss proportion 0.01
+INFO [2016-12-08 16:00:46] miss proportion 0.01
+INFO [2016-12-08 16:00:46] method mean
+INFO [2016-12-08 16:00:46] method mean
+INFO [2016-12-08 16:00:46] miss proportion 0.01
+INFO [2016-12-08 16:00:46] miss proportion 0.01
+INFO [2016-12-08 16:00:46] method min
+INFO [2016-12-08 16:00:46] method min
+INFO [2016-12-08 16:00:46] miss proportion 0.05
+INFO [2016-12-08 16:00:46] miss proportion 0.05
+INFO [2016-12-08 16:00:46] method RF
+INFO [2016-12-08 16:00:46] method RF
+INFO [2016-12-08 16:00:46] miss proportion 0.05
+INFO [2016-12-08 16:00:46] miss proportion 0.05
+INFO [2016-12-08 16:00:46] method mean
+INFO [2016-12-08 16:00:46] method mean
+INFO [2016-12-08 16:00:46] miss proportion 0.05
+INFO [2016-12-08 16:00:46] miss proportion 0.05
+INFO [2016-12-08 16:00:46] method min
+INFO [2016-12-08 16:00:47] method min
+INFO [2016-12-08 16:00:47] miss proportion 0.1
+INFO [2016-12-08 16:00:47] miss proportion 0.1
+INFO [2016-12-08 16:00:47] method RF
+INFO [2016-12-08 16:00:47] method RF
+INFO [2016-12-08 16:00:47] miss proportion 0.1
+INFO [2016-12-08 16:00:47] miss proportion 0.1
+INFO [2016-12-08 16:00:47] method mean
+INFO [2016-12-08 16:00:47] method mean
+INFO [2016-12-08 16:00:47] miss proportion 0.1
+INFO [2016-12-08 16:00:47] miss proportion 0.1
+INFO [2016-12-08 16:00:47] method min
+INFO [2016-12-08 16:00:47] method min
+INFO [2016-12-08 16:00:47] miss proportion 0.2
+INFO [2016-12-08 16:00:47] miss proportion 0.2
+INFO [2016-12-08 16:00:47] method RF
+INFO [2016-12-08 16:00:47] method RF
+INFO [2016-12-08 16:00:47] miss proportion 0.2
+INFO [2016-12-08 16:00:47] miss proportion 0.2
+INFO [2016-12-08 16:00:47] method mean
+INFO [2016-12-08 16:00:47] method mean
+INFO [2016-12-08 16:00:47] miss proportion 0.2
+INFO [2016-12-08 16:00:47] miss proportion 0.2
+INFO [2016-12-08 16:00:47] method min
+INFO [2016-12-08 16:00:47] method min
+INFO [2016-12-08 16:00:48] miss proportion 0.3
+INFO [2016-12-08 16:00:47] miss proportion 0.3
+INFO [2016-12-08 16:00:48] method RF
+INFO [2016-12-08 16:00:48] method RF
+INFO [2016-12-08 16:00:48] miss proportion 0.3
+INFO [2016-12-08 16:00:48] miss proportion 0.3
+INFO [2016-12-08 16:00:48] method mean
+INFO [2016-12-08 16:00:48] method mean
+INFO [2016-12-08 16:00:48] miss proportion 0.3
+INFO [2016-12-08 16:00:48] miss proportion 0.3
+INFO [2016-12-08 16:00:48] method min
+INFO [2016-12-08 16:00:48] method min
+INFO [2016-12-08 16:00:48] ITERATION 2
+INFO [2016-12-08 16:00:48] ITERATION 1
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] method mean
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] method RF
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:25] miss proportion 0.01
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:25] method mean
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method mean
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method mean
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method mean
+INFO [2016-12-08 16:01:26] method mean
+INFO [2016-12-08 16:01:26] method mean
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method mean
+INFO [2016-12-08 16:01:26] method mean
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] method mean
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] miss proportion 0.01
+INFO [2016-12-08 16:01:26] miss proportion 0.05
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] method min
+INFO [2016-12-08 16:01:26] method RF
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] method RF
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] method RF
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] method mean
+INFO [2016-12-08 16:01:27] method RF
+INFO [2016-12-08 16:01:27] method RF
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] method RF
+INFO [2016-12-08 16:01:27] method RF
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] method min
+INFO [2016-12-08 16:01:27] method RF
+INFO [2016-12-08 16:01:27] method RF
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] method mean
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:27] method mean
+INFO [2016-12-08 16:01:27] method mean
+INFO [2016-12-08 16:01:27] method mean
+INFO [2016-12-08 16:01:27] miss proportion 0.05
+INFO [2016-12-08 16:01:28] method mean
+INFO [2016-12-08 16:01:27] miss proportion 0.1
+INFO [2016-12-08 16:01:28] method mean
+INFO [2016-12-08 16:01:28] method RF
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] method mean
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] method mean
+INFO [2016-12-08 16:01:28] method RF
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] method mean
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] method mean
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] method RF
+INFO [2016-12-08 16:01:28] method RF
+INFO [2016-12-08 16:01:28] miss proportion 0.05
+INFO [2016-12-08 16:01:28] method RF
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] method RF
+INFO [2016-12-08 16:01:28] method RF
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] method RF
+INFO [2016-12-08 16:01:28] method min
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:28] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] method RF
+INFO [2016-12-08 16:01:29] method RF
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method RF
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] method RF
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] method RF
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] method min
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] method RF
+INFO [2016-12-08 16:01:29] miss proportion 0.1
+INFO [2016-12-08 16:01:29] method mean
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:29] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] miss proportion 0.2
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] method min
+INFO [2016-12-08 16:01:30] miss proportion 0.3
+INFO [2016-12-08 16:01:30] method mean
+INFO [2016-12-08 16:01:30] method RF
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] method RF
+INFO [2016-12-08 16:01:31] method RF
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] method RF
+INFO [2016-12-08 16:01:31] method mean
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] method RF
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] ITERATION 3
+INFO [2016-12-08 16:01:31] method RF
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] ITERATION 2
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] method mean
+INFO [2016-12-08 16:01:31] method mean
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] method mean
+INFO [2016-12-08 16:01:31] method mean
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] method mean
+INFO [2016-12-08 16:01:31] method mean
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] ITERATION 9
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] ITERATION 6
+INFO [2016-12-08 16:01:31] miss proportion 0.3
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] ITERATION 10
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] ITERATION 1
+INFO [2016-12-08 16:01:31] method min
+INFO [2016-12-08 16:01:31] ITERATION 8
+INFO [2016-12-08 16:01:31] ITERATION 7
+INFO [2016-12-08 16:01:31] ITERATION 5
