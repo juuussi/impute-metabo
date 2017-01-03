@@ -25,7 +25,7 @@ for (fileName in fileNames){
   p <- p + theme_bw() + facet_grid(.~Prop)
   
   
-  ggsave(filename = paste0(fileName,".pdf") ,plot = p)
+  ggsave(filename = paste0(fileName,".pdf") ,plot = p,width = 20, height = 20, units = "cm")
   
   
 }

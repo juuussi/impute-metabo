@@ -5685,3 +5685,103 @@ INFO [2016-12-31 11:20:12] iteration: 3 miss proportion: 0.4 method: RF
 INFO [2016-12-31 11:22:12] iteration: 2 miss proportion: 0.4 method: RF
 INFO [2016-12-31 11:32:57] iteration: 1 miss proportion: 0.4 method: RF
 INFO [2016-12-31 11:52:53] **** full results ****
+INFO [2017-01-02 17:01:31] iteration: 2 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:03:11] iteration: 1 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:03:24] iteration: 3 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:05:19] **** full results ****
+INFO [2017-01-02 17:05:19] ITERATION 1
+INFO [2017-01-02 17:05:19] ITERATION 2
+INFO [2017-01-02 17:05:19] ITERATION 3
+INFO [2017-01-02 17:05:54] iteration: 2 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:05:55] iteration: 2 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:05:55] iteration: 3 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:05:55] iteration: 1 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:05:55] iteration: 2 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:05:56] iteration: 3 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:05:56] iteration: 1 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:05:56] iteration: 3 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:05:56] iteration: 1 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:07:08] iteration: 2 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:07:10] iteration: 1 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:07:20] iteration: 3 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:08:28] **** full results ****
+INFO [2017-01-02 17:08:28] ITERATION 1
+INFO [2017-01-02 17:08:28] ITERATION 2
+INFO [2017-01-02 17:08:28] ITERATION 3
+INFO [2017-01-02 17:09:11] iteration: 2 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:09:12] iteration: 2 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:09:12] iteration: 2 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:09:20] iteration: 1 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:09:20] iteration: 1 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:09:21] iteration: 1 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:09:21] iteration: 3 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:09:22] iteration: 3 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:09:22] iteration: 3 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:11:00] iteration: 3 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:11:04] iteration: 2 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:11:14] iteration: 1 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:12:34] **** full results ****
+INFO [2017-01-02 17:12:34] ITERATION 1
+INFO [2017-01-02 17:12:34] ITERATION 2
+INFO [2017-01-02 17:12:34] ITERATION 3
+INFO [2017-01-02 17:14:16] iteration: 2 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:14:17] iteration: 1 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:14:18] iteration: 3 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:14:19] iteration: 2 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:14:19] iteration: 3 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:14:21] iteration: 3 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:14:21] iteration: 1 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:14:21] iteration: 2 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:14:22] iteration: 1 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:24:42] iteration: 2 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:25:10] iteration: 3 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:25:39] iteration: 1 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:31:05] **** full results ****
+INFO [2017-01-02 17:31:05] ITERATION 1
+INFO [2017-01-02 17:31:05] ITERATION 2
+INFO [2017-01-02 17:31:05] ITERATION 3
+INFO [2017-01-02 17:31:51] iteration: 1 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:31:51] iteration: 2 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:31:52] iteration: 1 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:31:52] iteration: 2 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:31:52] iteration: 1 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:31:52] iteration: 2 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:31:55] iteration: 3 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:31:56] iteration: 3 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:31:56] iteration: 3 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:33:18] iteration: 2 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:33:24] iteration: 3 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:33:31] iteration: 1 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:34:51] **** full results ****
+INFO [2017-01-02 17:34:51] ITERATION 1
+INFO [2017-01-02 17:34:51] ITERATION 2
+INFO [2017-01-02 17:34:51] ITERATION 3
+INFO [2017-01-02 17:35:46] iteration: 2 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:35:47] iteration: 2 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:35:47] iteration: 1 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:35:47] iteration: 2 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:35:48] iteration: 3 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:35:48] iteration: 1 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:35:48] iteration: 1 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:35:48] iteration: 3 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:35:49] iteration: 3 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:37:49] iteration: 1 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:38:01] iteration: 3 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:38:03] iteration: 2 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:40:05] **** full results ****
+INFO [2017-01-02 17:40:05] ITERATION 1
+INFO [2017-01-02 17:40:05] ITERATION 2
+INFO [2017-01-02 17:40:05] ITERATION 3
+INFO [2017-01-02 17:42:25] iteration: 3 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:42:27] iteration: 3 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:42:28] iteration: 3 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:42:31] iteration: 1 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:42:32] iteration: 2 miss proportion: 0.01 method: min
+INFO [2017-01-02 17:42:33] iteration: 1 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:42:34] iteration: 2 miss proportion: 0.01 method: mean
+INFO [2017-01-02 17:42:34] iteration: 1 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:42:36] iteration: 2 miss proportion: 0.01 method: PPCA
+INFO [2017-01-02 17:56:29] iteration: 2 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:57:10] iteration: 1 miss proportion: 0.01 method: RF
+INFO [2017-01-02 17:57:13] iteration: 3 miss proportion: 0.01 method: RF
+INFO [2017-01-02 18:05:49] **** full results ****
