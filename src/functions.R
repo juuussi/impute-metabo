@@ -185,18 +185,18 @@ impute <- function(data, methods) {
 
 
 
-#' Title MSE_simulated
-#' Calculates the  mean square error between simulated(reference) data and imputed data
+#' Title Differences_models
+#' Calculates the  differences  between simulated(reference) data and imputed data
 #' @param data1 = simulated data matrix
 #' @param data2 = data matrix with missing values
 #' @param data3 = imputed data matrix
 #'
 #' @return
-#' @export error(mse)
+#' @export differences
 #'
 #' @examples
-RMSE_simulated <- function(data1,data2,data3){
-  error <- sqrt(sum((data1[is.na(data2)] - data3[is.na(data2)])^2) /nrow(data1))
-  error
+Differences_models <- function(data1,data2,data3){
+  differences <- sum((data1[is.na(data2)] - data3[is.na(data2)])^2) / sum(data1[is.na(data2)]^2)
+  differences
 }
 
