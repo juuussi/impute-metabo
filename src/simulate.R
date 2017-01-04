@@ -15,6 +15,7 @@ flog.appender(appender.tee(paste0(path,"results/logFile.log")))
 
 flog.threshold(INFO)
 data_size <- matrix(c(50,150,200,500,600,1500),nrow=3,ncol = 2)
+
 reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
 set.seed(1406)
@@ -25,9 +26,9 @@ for (ia in 1:nrow(data_size)){
     
     n_rows <- data_size[ia,1]
     n_cols <- data_size[ja,2]
-    # n_iterations <- 2
+    #  n_iterations <- 2
     # n_rows <-100
-    # n_cols <- 50
+    #  n_cols <- 50
     miss_proportions <- c(0.01, 0.1,0.3,0.4)
     imputation_methods <- c( "min","mean","PPCA","RF")
     
@@ -49,8 +50,9 @@ for (ia in 1:nrow(data_size)){
           
           #COMPARING RESULTS USING ROOT MEAN SQUARE ERROR
           
-          results_rmse <- RMSE_simulated(data1 = simulated_data,data2 = miss_data,data3 = imputed_data)
-          results_f <- cbind(data.frame(Method=method, Prop=prop, Iteration=iteration),results_rmse )
+          results_differences <- Differences_models(data1 = simulated_data,data2 = miss_data,data3 = imputed_data)
+          error <- missForest:: nrmse(imputed_data,miss_data,simulated_data)
+          results_f <- cbind(data.frame(Method=method, Prop=prop, Iteration=iteration),results_differences, error)
           
           results_f
           
