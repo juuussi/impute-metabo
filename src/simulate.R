@@ -29,7 +29,7 @@ for (ia in 1:nrow(data_size)){
     #  n_iterations <- 2
     # n_rows <-100
     #  n_cols <- 50
-    miss_proportions <- c(0.01, 0.1,0.3,0.4)
+    miss_proportions <- c(0.01)
     imputation_methods <- c( "min","mean","PPCA","RF")
     
     full_results <- foreach(iteration=1:n_iterations, .combine="rbind") %dopar% {
@@ -44,7 +44,7 @@ for (ia in 1:nrow(data_size)){
           method <- imputation_methods[j]
           flog.info(paste('iteration:', iteration, 'miss proportion:', prop, "method:", method, sep=" "))
           
-          miss_data <- simulate_missingness(data=simulated_data, mcar=prop)
+          miss_data <- simulate_missingness(data=simulated_data, mnar=prop)
           imputed_data <- impute(data=miss_data, methods=method)
           
           
@@ -70,7 +70,7 @@ for (ia in 1:nrow(data_size)){
     
     full_results
     flog.info("**** full results ****")
-    write.csv(x=full_results, file=paste0(path, "results/result_NeWmcar_",data_size[ia,1],"_",data_size[ja,2], ".csv"), row.names=FALSE)
+    write.csv(x=full_results, file=paste0(path, "results/result_NeWmnar_",data_size[ia,1],"_",data_size[ja,2], ".csv"), row.names=FALSE)
     
   }
   
