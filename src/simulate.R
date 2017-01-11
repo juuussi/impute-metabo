@@ -19,13 +19,20 @@ data_size <- matrix(c(50,150,200,500,600,1500),nrow=3,ncol = 2)
 reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
 set.seed(1406)
-for (ia in 1:nrow(data_size)){
+
+data_rows <- c(50, 150, 200)
+data_cols <- c(500, 600, 1500)
+
+for(n_rows in data_rows) {
+  for (n_cols in data_cols) {
+    
+#for (ia in 1:nrow(data_size)){
   
-  for (ja in 1:nrow(data_size)) {
+  #for (ja in 1:nrow(data_size)) {
     n_iterations <- 3
     
-    n_rows <- data_size[ia,1]
-    n_cols <- data_size[ja,2]
+    #n_rows <- data_size[ia,1]
+    #n_cols <- data_size[ja,2]
     #  n_iterations <- 2
     # n_rows <-100
     #  n_cols <- 50
@@ -70,7 +77,7 @@ for (ia in 1:nrow(data_size)){
     
     full_results
     flog.info("**** full results ****")
-    write.csv(x=full_results, file=paste0(path, "results/result_NeWmnar_",data_size[ia,1],"_",data_size[ja,2], ".csv"), row.names=FALSE)
+    write.csv(x=full_results, file=paste0(path, "results/result_NeWmnar_",n_rows,"_",n_cols, ".csv"), row.names=FALSE)
     
   }
   
