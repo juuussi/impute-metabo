@@ -1,3 +1,21 @@
+
+missingness_proportions <- function(miss_proportions) {
+  result.df <- NULL
+  for (prop in miss_proportions) {
+    print(prop)
+    df <- data.frame(Total=prop, MCAR=c(prop,0, 0,prop/2, prop/2, 0, prop/3), MNAR=c(0, prop, 0, prop/2, 0, prop/2, prop/3), MAR=c(0,0,prop, 0, prop/2, prop/2, prop/3))
+    #df <- data.frame(MCAR=c(prop,0, 0,prop/2, prop/2, 0, prop/3), MNAR=c(0, prop, 0, prop/2, 0, prop/2, prop/3), MAR=rep(0, times=7))
+    
+    if (is.null(result.df)) {
+      result.df <- df
+    } else {
+      result.df <- rbind(result.df, df)
+    }
+  }
+  result.df
+  
+}
+
 #' Simulate multivariate data based on given reference data
 #'
 #' Uses \code{mvrnorm} function to simulate data matrix of given dimensions, 
@@ -85,6 +103,12 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
     mcar_distribution   = runif(nrow(data)*ncol(data), min=0, max=1)
     simulated_data = matrix(ifelse(mcar_distribution<mcar, NA, data), nrow=nrow(data), ncol=ncol(data))
   }
+  # MNAR not implemented, using MCAR
+  if (mar > 0){
+    mar_distribution   = runif(nrow(data)*ncol(data), min=0, max=1)
+    simulated_data = matrix(ifelse(mar_distribution<mar, NA, data), nrow=nrow(data), ncol=ncol(data))
+  }
+  
   if (mnar > 0) {
     added_mnar <- 0
     initial_nas <- sum(colSums(is.na(simulated_data)))
@@ -206,8 +230,8 @@ impute <- function(data, methods) {
 #' @export differences
 #'
 #' @examples
-Differences_models <- function(data1,data2,data3){
-  differences <- sum((data1[is.na(data2)] - data3[is.na(data2)])^2) / sum(data1[is.na(data2)]^2)
+differences_models <- function(original.data, missing.data, imputed.data){
+  differences <- sum((original.data[is.na(missing.data)] - imputed.data[is.na(missing.data)])^2) / sum(original.data[is.na(missing.data)]^2)
   differences
 }
 
