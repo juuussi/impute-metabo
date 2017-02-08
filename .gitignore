@@ -1,3 +1,4 @@
+*.log
 .nfs*
 *.pdf
 .DS_Store
