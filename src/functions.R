@@ -103,10 +103,35 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
     mcar_distribution   = runif(nrow(data)*ncol(data), min=0, max=1)
     simulated_data = matrix(ifelse(mcar_distribution<mcar, NA, data), nrow=nrow(data), ncol=ncol(data))
   }
-  # MNAR not implemented, using MCAR
+  # MAR , the missigness doent reach 0,5
   if (mar > 0){
-    mar_distribution   = runif(nrow(data)*ncol(data), min=0, max=1)
-    simulated_data = matrix(ifelse(mar_distribution<mar, NA, data), nrow=nrow(data), ncol=ncol(data))
+    initial_nas <- sum(colSums(is.na(simulated_data)))
+    current_nas <- initial_nas
+    simulated_data_n <- ncol(simulated_data) * nrow(simulated_data)
+    current_nan_percentage <- 0
+    columns <- NULL
+    # number of columns to choose
+    support <- 1:(ncol(simulated_data)-1)
+    if  (((current_nas - initial_nas) / simulated_data_n) < mar){
+      while(length(support) > 0 && current_nan_percentage < mar ) {
+        # try to take unique column each time
+        column <- sample(x=support, size=1)
+        support <- setdiff(1:(ncol(simulated_data)-1), columns)
+        
+        columns <- c(columns, column)
+        #print(columns)
+        # condition: 
+        # calculate the mean of the choosen column
+        mn <- mean(simulated_data[,column])
+        # dependency : remove the values on the next column(from the one it pick) above the mean 
+        simulated_data[simulated_data[,column+1] > mn, column+1] <- NA 
+        # check the current missing porpotion
+        current_nan_percentage <- length(which(is.na(simulated_data)))/length(simulated_data)
+        print(current_nan_percentage)
+      }
+    }
+    
+    
   }
   
   if (mnar > 0) {
@@ -114,7 +139,7 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
     initial_nas <- sum(colSums(is.na(simulated_data)))
     current_nas <- initial_nas
     simulated_data_n <- ncol(simulated_data) * nrow(simulated_data)
-    
+    # condition of porpotion of missigness
     while (((current_nas - initial_nas) / simulated_data_n) < mnar) {
       
       # Select random variable
