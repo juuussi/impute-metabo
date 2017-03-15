@@ -1,9 +1,19 @@
-
+######### Function No1 ##################################
+#' Title missingness_proportions
+#'equally division of the percentages of missigness between the three types of missigness (MCAR,MNAR,MAR)
+#' @param miss_proportions 
+#'
+#' @return  result.df a dataframe containing the perecenatges per type
+#' @export
+#'
+#' @examples
+#' 
+#' 
 missingness_proportions <- function(miss_proportions) {
   result.df <- NULL
   for (prop in miss_proportions) {
     print(prop)
-    df <- data.frame(Total=prop, MCAR=c(prop,0, 0,prop/2, prop/2, 0, prop/3), MNAR=c(0, prop, 0, prop/2, 0, prop/2, prop/3), MAR=c(0,0,prop, 0, prop/2, prop/2, prop/3))
+    df <- data.frame(Total=prop, MCAR=round(c(prop,0, 0,prop/2, prop/2, 0, prop/3),digits = 3), MNAR=round(c(0, prop, 0, prop/2, 0, prop/2, prop/3),digits = 3), MAR=round(c(0,0,prop, 0, prop/2, prop/2, prop/3),digits = 3))
     #df <- data.frame(MCAR=c(prop,0, 0,prop/2, prop/2, 0, prop/3), MNAR=c(0, prop, 0, prop/2, 0, prop/2, prop/3), MAR=rep(0, times=7))
     
     if (is.null(result.df)) {
@@ -15,6 +25,8 @@ missingness_proportions <- function(miss_proportions) {
   result.df
   
 }
+
+######### Function No2  ##################################
 
 #' Simulate multivariate data based on given reference data
 #'
@@ -40,6 +52,7 @@ simulate_data <- function(data, nrow, ncol, ...) {
   simulated_data
 }
 
+######### Function No3  ##################################
 
 #' Title compare_results
 #' Calculates the correlation between two matrices/ we use it to evaluate the different 
@@ -55,26 +68,9 @@ compare_results <- function(x, y) {
   c <- cor.test(as.vector(x), as.vector(y))
   data.frame(Cor=c$estimate, CorP=c$p.value)
   
-  
 }
 
-
-compare_results2 <- function(x, y, missing) {
-  missing_index <- which(is.na(as.vector(missing)))
-  x.val <- as.vector(x)[missing_index]
-  y.val <- as.vector(y)[missing_index]
-  flog.info(paste('missing:', paste(missing_index, collapse=", "), '\norig:', paste(x.val, collapse=", "),'\nimpu:', paste(y.val, collapse=", "),sep=' '))
-  
-  c <- cor.test(x.val, y.val)
-  
-  flog.info(paste("Cor:", c$estimate, "P:", c$p.value, sep=" "))
-  data.frame(Cor=c$estimate, CorP=c$p.value)
-  
-  
-}
-
-
-
+######### Function No4  ##################################
 
 #' Title simulate_missingness
 #' Uses the simulated data to create the different types of missingness (MCAR,MNAR,MAR) 
@@ -89,7 +85,9 @@ compare_results2 <- function(x, y, missing) {
 #' @export
 #'
 #' @examples miss_data <- simulate_missingness(data=simulated_data, mcar=0.01)
-simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") {
+
+
+simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left", mar.type="left") {
   
   if(class(data) != "matrix") {
     stop("Variable data should be a matrix.")
@@ -102,36 +100,6 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
   if (mcar > 0){
     mcar_distribution   = runif(nrow(data)*ncol(data), min=0, max=1)
     simulated_data = matrix(ifelse(mcar_distribution<mcar, NA, data), nrow=nrow(data), ncol=ncol(data))
-  }
-  # MAR , the missigness doent reach 0,5
-  if (mar > 0){
-    initial_nas <- sum(colSums(is.na(simulated_data)))
-    current_nas <- initial_nas
-    simulated_data_n <- ncol(simulated_data) * nrow(simulated_data)
-    current_nan_percentage <- 0
-    columns <- NULL
-    # number of columns to choose
-    support <- 1:(ncol(simulated_data)-1)
-    if  (((current_nas - initial_nas) / simulated_data_n) < mar){
-      while(length(support) > 0 && current_nan_percentage < mar ) {
-        # try to take unique column each time
-        column <- sample(x=support, size=1)
-        support <- setdiff(1:(ncol(simulated_data)-1), columns)
-        
-        columns <- c(columns, column)
-        #print(columns)
-        # condition: 
-        # calculate the mean of the choosen column
-        mn <- mean(simulated_data[,column])
-        # dependency : remove the values on the next column(from the one it pick) above the mean 
-        simulated_data[simulated_data[,column+1] > mn, column+1] <- NA 
-        # check the current missing porpotion
-        current_nan_percentage <- length(which(is.na(simulated_data)))/length(simulated_data)
-        print(current_nan_percentage)
-      }
-    }
-    
-    
   }
   
   if (mnar > 0) {
@@ -175,10 +143,54 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left") 
     }
   }
   
+  if (mar > 0) {
+    added_mar <- 0
+    initial_nas <- sum(colSums(is.na(simulated_data)))
+    current_nas <- initial_nas
+    simulated_data_n <- ncol(simulated_data) * nrow(simulated_data)
+    # condition of porpotion of missigness
+    while (((current_nas - initial_nas) / simulated_data_n) < mar) {
+      
+      # Select random variable
+      variable_index <- sample(1:ncol(simulated_data), 1)
+      variable_index2 <- sample(setdiff(1:ncol(simulated_data), variable_index), 1)
+      
+      
+      # What percentage of variable to set missing
+      cut_percentage <- 0
+      while (cut_percentage <= 0) {
+        cut_percentage <- rchisq(1, df=1) / 30
+      }
+      cut_percentage <- min(cut_percentage, 1)
+      
+      # How many values to set missing
+      cut_index <- floor(cut_percentage * nrow(simulated_data))
+      
+      sorted_variable <- sort(simulated_data[,variable_index])
+      
+      # Set values to missing
+      if (mar.type == "right") {
+        # Corresponding cut-off point for values
+        cut_point <- sorted_variable[length(sorted_variable) - cut_index]
+        
+        simulated_data[simulated_data[,variable_index] > cut_point, variable_index2] <- NA
+      } else {
+        # Corresponding cut-off point for values
+        cut_point <- sorted_variable[cut_index]
+        
+        simulated_data[simulated_data[,variable_index] < cut_point, variable_index2] <- NA
+      }
+      
+      # Counter to check how much MNAR missingness has been added to data
+      current_nas <- sum(colSums(is.na(simulated_data)))
+    }
+  }
+  
   simulated_data
   
 }
 
+######### Function No5  ##################################
 
 
 #' Title impute
@@ -224,6 +236,25 @@ impute <- function(data, methods) {
     
   }
   
+  if("LLS" %in% methods ){
+    
+    lls_esti <- pcaMethods::llsImpute(data, k = 50, center = FALSE, completeObs = TRUE, correlation = "kendall", allVariables = TRUE, maxSteps = 100)
+    imputed_data <- completeObs(lls_esti)
+  } 
+  
+  if("svdImpute" %in% methods ){
+    
+    svd_esti <- pcaMethods::pca(data, method="svdImpute", nPcs=10, center = FALSE)
+    imputed_data <- completeObs(svd_esti)
+  } 
+  
+  if("KNNImpute" %in% methods ){
+    
+    KNN_esti <- impute::impute.knn(data)
+    imputed_data <- KNN_esti$data
+  } 
+  
+  
   foreach (data_column=1:ncol(data)) %do% {
     method <- methods[data_column]
     
@@ -243,6 +274,7 @@ impute <- function(data, methods) {
   
 }
 
+######### Function No6  ##################################
 
 
 #' Title Differences_models
