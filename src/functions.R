@@ -217,10 +217,8 @@ impute <- function(data, methods) {
   if (length(methods) == 1) {
     methods <- rep(methods, times=ncol(data))
   }
-  
-  
   if ("RF" %in% methods) {
-    rf_imputed_data <- missForest::missForest(xmis = data)$ximp
+    rf_imputed_data <- missForest::missForest(xmis = data,maxiter = 10,verbose = TRUE)$ximp
     index <- which(methods == "RF")
     imputed_data[,index] <- rf_imputed_data[,index]
   }
@@ -232,12 +230,9 @@ impute <- function(data, methods) {
     pc <- pcaMethods::pca(data,nPcs=esti$bestNPcs, method="ppca")
     #index <- which(methods == "PPCA")
     imputed_data <- completeObs(pc)
-    
-    
   }
-  
   if("LLS" %in% methods ){
-    
+    # local least squares imputation
     lls_esti <- pcaMethods::llsImpute(data, k = 50, center = FALSE, completeObs = TRUE, correlation = "kendall", allVariables = TRUE, maxSteps = 100)
     imputed_data <- completeObs(lls_esti)
   } 
@@ -254,7 +249,6 @@ impute <- function(data, methods) {
     imputed_data <- KNN_esti$data
   } 
   
-  
   foreach (data_column=1:ncol(data)) %do% {
     method <- methods[data_column]
     
@@ -268,6 +262,7 @@ impute <- function(data, methods) {
       imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
       
     }
+    
   }
   
   imputed_data
@@ -275,6 +270,28 @@ impute <- function(data, methods) {
 }
 
 ######### Function No6  ##################################
+
+
+#' Title Rsquare_adjusted
+#' Calculates the  coefficient of determination  between simulated(reference) data and imputed data
+#' @param data1 = simulated data matrix
+#' @param data2 = data matrix with missing values
+#' @param data3 = imputed data matrix
+#'
+#' @return
+#' @export differences
+#'
+#' @examples
+Rsquare_adjusted <- function(original.data, missing.data, imputed.data){
+  rsquare <- 1-(sum((original.data[is.na(missing.data)] - imputed.data[is.na(missing.data)])^2) / sum(original.data[is.na(missing.data)]^2))
+  #adjustment <- (nrow(original.data)-1)/(nrow(original.data)-ncol(original.data)-1)
+  #differences <- 1-((1-rsquare)*adjustment)
+  rsquare
+}
+
+
+
+######### Function No7  ##################################
 
 
 #' Title Differences_models
