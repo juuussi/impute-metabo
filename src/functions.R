@@ -283,9 +283,11 @@ impute <- function(data, methods) {
 #'
 #' @examples
 Rsquare_adjusted <- function(original.data, missing.data, imputed.data){
-  rsquare <- 1-(sum((original.data[is.na(missing.data)] - imputed.data[is.na(missing.data)])^2) / sum(original.data[is.na(missing.data)]^2))
+  rsquare <- ((sum((original.data[is.na(missing.data)] - imputed.data[is.na(missing.data)])^2) / sum(original.data[is.na(missing.data)]^2)))
+  adjustment <- (nrow(original.data) -1)/(nrow(original.data)-ncol(original.data))
+  rsquare_adjustment <-  1-(rsquare*adjustment)
+  rsquare_adjustment
   
-  rsquare
 }
 
 
