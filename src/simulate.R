@@ -87,8 +87,9 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
           imputed_data <- impute(data=miss_data, methods=method)
           
           #COMPARING RESULTS USING ROOT MEAN SQUARE ERROR
+          results_Rsquare <- Rsquare_adjusted(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
           
-          results_differences <- differences_models(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
+          #results_differences <- differences_models(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
           nrmse_error <- missForest:: nrmse(imputed_data, miss_data, simulated_data)
           miss_model <- ""
           if(mnar_miss>0){
@@ -101,7 +102,8 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
             miss_model <- paste0(miss_model," MCAR ")
           }
           
-          results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(Result_diff=results_differences, NRMSE=nrmse_error))
+          #results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(Result_diff=results_differences, NRMSE=nrmse_error))
+          results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(Rsquare=results_Rsquare, NRMSE=nrmse_error))
           
           iteration_counter <- iteration_counter + 1
           results_f
