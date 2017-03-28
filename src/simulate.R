@@ -3,6 +3,7 @@ library(missForest)
 library(doMC)
 library(futile.logger)
 library(pcaMethods)
+library(impute)
 #####################
 registerDoMC(cores=30)
 
@@ -18,21 +19,24 @@ reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
 set.seed(1406)
 
-size_iterations <- 3
+size_iterations <- 2
 
-data_rows <- sample(x=100:1000, size=size_iterations)
-data_cols <- sample(x=10:50, size=size_iterations)
+data_rows <- sample(x=100:600, size=size_iterations)
+data_cols <- sample(x=3000:5000, size=size_iterations)
 
 #data_rows <- c(50, 150, 200)
 #data_cols <- c(500, 600, 1500)
 n_iterations <- 1
-miss_proportions <- c(0.01, 0.05)
+#miss_proportions <- c(0.01, 0.05,0.1,0.3)
+miss_proportions <- c(0.5)
+
 proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 
 #imputation_methods <- c( "min","mean","PPCA","RF")
 #miss_proportions <- seq(from=0.01, to=0.9, by=0.05)
-#imputation_methods <- c( "mean")
-imputation_methods <- c( "min","mean","PPCA","RF")
+imputation_methods <- c( "min","mean","PPCA","LLS","svdImpute","KNNImpute")
+
+#imputation_methods <- c( "min","mean","PPCA","RF")
 
 total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
 flog.info(paste('Total number of iterations: ', total_iterations, sep=' '))
@@ -86,7 +90,18 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
           
           results_differences <- differences_models(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
           nrmse_error <- missForest:: nrmse(imputed_data, miss_data, simulated_data)
-          results_f <- cbind(data.frame(Method=method, Miss=total_miss, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(Result_diff=results_differences, NRMSE=nrmse_error))
+          miss_model <- ""
+          if(mnar_miss>0){
+            miss_model <- paste0(miss_model," MNAR ")
+          }
+          if(mar_miss>0){
+            miss_model <- paste0(miss_model," MAR ")
+          }
+          if(mcar_miss>0){
+            miss_model <- paste0(miss_model," MCAR ")
+          }
+          
+          results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(Result_diff=results_differences, NRMSE=nrmse_error))
           
           iteration_counter <- iteration_counter + 1
           results_f
@@ -114,5 +129,5 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
   }
 
 
-write.csv(x=full_results, file=paste0(path, "results/results.csv"), row.names=FALSE)
+write.csv(x=full_results, file=paste0(path, "results/results4.csv"), row.names=FALSE)
 head(full_results,10)
