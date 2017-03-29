@@ -8,7 +8,8 @@
 #'
 #' @examples
 #' 
-#' 
+#' #'####################################################
+
 missingness_proportions <- function(miss_proportions) {
   result.df <- NULL
   for (prop in miss_proportions) {
@@ -42,7 +43,8 @@ missingness_proportions <- function(miss_proportions) {
 #' @export
 #'
 #' @examples
-#' 
+#' #'####################################################
+
 simulate_data <- function(data, nrow, ncol, ...) {
   
   require(MASS)
@@ -64,6 +66,8 @@ simulate_data <- function(data, nrow, ncol, ...) {
 #' @export
 #'
 #' @examples compared_results <- compare_results(simulated_data, imputed_data)
+#' #'####################################################
+
 compare_results <- function(x, y) {
   c <- cor.test(as.vector(x), as.vector(y))
   data.frame(Cor=c$estimate, CorP=c$p.value)
@@ -85,6 +89,7 @@ compare_results <- function(x, y) {
 #' @export
 #'
 #' @examples miss_data <- simulate_missingness(data=simulated_data, mcar=0.01)
+#'####################################################
 
 
 simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left", mar.type="left") {
@@ -204,6 +209,8 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left", 
 #'
 #' @examples imputation_methods <- c("RF", "mean", "min")
 #' imputed_data <- impute(data=miss_data, methods=imputation_methods)
+#' #'####################################################
+
 impute <- function(data, methods) {
   
   require(missForest)
@@ -283,6 +290,8 @@ impute <- function(data, methods) {
 #' @export differences
 #'
 #' @examples
+#' #'####################################################
+
 Rsquare_adjusted <- function(original.data, missing.data, imputed.data){
   rsquare <- ((sum((original.data[is.na(missing.data)] - imputed.data[is.na(missing.data)])^2) / sum(original.data[is.na(missing.data)]^2)))
   adjustment <- (nrow(original.data) -1)/(nrow(original.data)-ncol(original.data)-1)
@@ -306,8 +315,42 @@ Rsquare_adjusted <- function(original.data, missing.data, imputed.data){
 #' @export differences
 #'
 #' @examples
+#'####################################################
 differences_models <- function(original.data, missing.data, imputed.data){
   differences <- sum((original.data[is.na(missing.data)] - imputed.data[is.na(missing.data)])^2) / sum(original.data[is.na(missing.data)]^2)
   differences
 }
 
+######### Function No8  ##################################
+
+#' Title replace_NA_to_0
+#'A function that replaces missing values to zero in a matrix 
+#' when the percentage of missingness in each column is equal or greater than 0.8
+#' @param missing.data 
+#'
+#' @return missing.data
+#' @export
+#'
+#' @examples
+#' 
+#' ####################################################
+replace_NA_to_0 <- function(missing.data) {
+  
+  # initialize
+  col_nan <- NULL
+  total_length_col <- NULL
+  percentage_nan<- NULL
+  # loop every column
+  for (i in col(missing.data)){
+    # check how many rows in every column have NA
+    col_nan[i] <- length(which(is.na(missing.data[,i])))
+    total_length_col[i] <- length(missing.data[,i])
+    #calculate the percentage of NA of every column
+    percentage_nan[i] <- col_nan[i]/total_length_col[i]
+    # if the percenatge of NA every column is above 0.8 replace with zero
+    if (percentage_nan[i] >= 0.8){
+      missing.data[is.na(missing.data[,i]),i] <- 0
+    }
+  }
+  missing.data
+}
