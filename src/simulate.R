@@ -21,10 +21,10 @@ reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
 #define the sample space
 set.seed(1406)
-size_iterations <- 5
+size_iterations <- 1
 
 seq_rows <- seq(from=10, to=150, by= 30)
-seq_cols <-  seq(from=100, to=1000, by= 50)
+seq_cols <-  seq(from=10, to=100, by= 50)
 
 
 data_rows <- sample(x=seq_rows, size=size_iterations)
@@ -42,9 +42,9 @@ proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 
 # Define the methods
 
-#imputation_methods <- c( "min","mean")
+imputation_methods <- c( "min")
 
-imputation_methods <- c("KNNImpute")
+#imputation_methods <- c("KNNImpute")
 #imputation_methods <- c( "min","mean","PPCA","LLS","svdImpute","KNNImpute")
 ################################################################################
 # calculate the total time of iterations
@@ -95,6 +95,9 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
           
           # calculate the computational time per method
           start <- Sys.time ()
+          # replace missing values with zero
+          miss_data <- replace_NA_to_0(miss_data)
+          # impute the data
           imputed_data <- impute(data=miss_data, methods=method)
           
           time_diff <- Sys.time () - start
