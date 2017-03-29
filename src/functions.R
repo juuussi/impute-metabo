@@ -14,7 +14,7 @@ missingness_proportions <- function(miss_proportions) {
   result.df <- NULL
   for (prop in miss_proportions) {
     print(prop)
-    df <- data.frame(Total=prop, MCAR=round(c(prop,0, 0,prop/2, prop/2, 0, prop/3),digits = 3), MNAR=round(c(0, prop, 0, prop/2, 0, prop/2, prop/3),digits = 3), MAR=round(c(0,0,prop, 0, prop/2, prop/2, prop/3),digits = 3))
+    df <- data.frame(Total=prop, MCAR=round(c(prop,0, 0,prop/2, prop/2, 0, prop/3),digits = 2), MNAR=round(c(0, prop, 0, prop/2, 0, prop/2, prop/3),digits = 2), MAR=round(c(0,0,prop, 0, prop/2, prop/2, prop/3),digits = 2))
     #df <- data.frame(MCAR=c(prop,0, 0,prop/2, prop/2, 0, prop/3), MNAR=c(0, prop, 0, prop/2, 0, prop/2, prop/3), MAR=rep(0, times=7))
     
     if (is.null(result.df)) {
