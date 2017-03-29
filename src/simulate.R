@@ -135,5 +135,5 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
 
 
 
-write.csv(x=full_results, file=paste0(path, "results/results4.csv"), row.names=FALSE)
+write.csv(x=full_results, file=paste0(path, "results/results.csv"), row.names=FALSE)
 head(full_results,10)

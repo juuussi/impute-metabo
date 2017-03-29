@@ -235,6 +235,7 @@ impute <- function(data, methods) {
     # local least squares imputation
     lls_esti <- pcaMethods::llsImpute(data, k = 50, center = FALSE, completeObs = TRUE, correlation = "kendall", allVariables = TRUE, maxSteps = 100)
     imputed_data <- completeObs(lls_esti)
+    
   } 
   
   if("svdImpute" %in% methods ){
