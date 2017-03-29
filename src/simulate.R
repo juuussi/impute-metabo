@@ -1,97 +1,112 @@
-# libraries
+# libraries needed
 library(missForest)
 library(doMC)
 library(futile.logger)
 library(pcaMethods)
-library(impute)
-#####################
+###################################################################################
+# start parallel
 registerDoMC(cores=30)
-
+# choose path
 path <- "~/projects/impute-metabo/"
 #output_path <- '/home/users/mariekok/projects/impute-metabo/results/result.csv'
 source(paste0(path,"src/functions.R"))
+# start logging process by creating a logging file
 flog.appender(appender.tee(paste0(path,"results/logFile.log")))
-
 flog.threshold(DEBUG)
-#data_size <- matrix(c(50,150,200,500,600,1500),nrow=3,ncol = 2)
-
+###################################################################################
+# use dummy reference data (combination of different metabolomics data)
 reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
+###################################################################################
+
+#define the sample space
 set.seed(1406)
+size_iterations <- 5
 
-size_iterations <- 2
+seq_rows <- seq(from=10, to=150, by= 30)
+seq_cols <-  seq(from=100, to=1000, by= 50)
 
-data_rows <- sample(x=100:600, size=size_iterations)
-data_cols <- sample(x=3000:5000, size=size_iterations)
 
-#data_rows <- c(50, 150, 200)
-#data_cols <- c(500, 600, 1500)
+data_rows <- sample(x=seq_rows, size=size_iterations)
+data_cols <- sample(x=seq_cols, size=size_iterations)
 n_iterations <- 1
+
+################################################################################
+
+# define the percenatge of missigness
 #miss_proportions <- c(0.01, 0.05,0.1,0.3)
-miss_proportions <- c(0.5)
+miss_proportions <- c(0.2,0.4)
 
 proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
+################################################################################
 
-#imputation_methods <- c( "min","mean","PPCA","RF")
-#miss_proportions <- seq(from=0.01, to=0.9, by=0.05)
-imputation_methods <- c( "min","mean","PPCA","LLS","svdImpute","KNNImpute")
+# Define the methods
 
-#imputation_methods <- c( "min","mean","PPCA","RF")
+#imputation_methods <- c( "min","mean")
 
+imputation_methods <- c("KNNImpute")
+#imputation_methods <- c( "min","mean","PPCA","LLS","svdImpute","KNNImpute")
+################################################################################
+# calculate the total time of iterations
 total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
+
+################################################################################
+
+# log the total number of iterations
 flog.info(paste('Total number of iterations: ', total_iterations, sep=' '))
 
 iteration_counter <- 1
 
+################################################################################
+
 full_results <- NULL
-
-#for(n_rows in data_rows) {
-#  for (n_cols in data_cols) {
-
 full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
+  
   foreach(c=1:length(data_cols), .combine="rbind") %dopar% {
     n_rows <- data_rows[r]
     n_cols <- data_cols[c]
-    #flog.info(paste('Data size:', n_rows, "x", n_cols,  sep=' '))
     
     iteration_results <- foreach(iteration=1:n_iterations, .combine="rbind") %dopar% {
-      #prop <- miss_proportions[i]
       
-      
+      # simulate the data from the reference data(using multivariate normal distribution)
       simulated_data <- simulate_data(data=reference_data, nrow=n_rows, ncol=n_cols)
       
-      # proportion_results <- foreach(i=1:length(miss_proportions), .combine="rbind") %do% {
+      
+      # choose the percenatge of missigness 
       proportion_results <- foreach(h=1:nrow(proportions_df), .combine="rbind") %do% {
         
-        
-        #miss_data <- simulate_missingness(data=simulated_data, mnar=prop)
+        # seperate the percenatge of missigness per type of misssigness 
         mcar_miss <- proportions_df$MCAR[h]
         mnar_miss <- proportions_df$MNAR[h]
         mar_miss <- proportions_df$MAR[h]
         total_miss <- proportions_df$Total[h]
         
-        #flog.info(paste('Missingness - Total:', total_miss, "MCAR:", mcar_miss, "MAR:", mar_miss, "MNAR:", mnar_miss,  sep=' '))
         
+        # simulate different type of missgness MCAR,MNAR & MAR using the different percenatges of missigness
         miss_data <- simulate_missingness(data=simulated_data, mcar=mcar_miss, mnar=mnar_miss, mar=mar_miss)
         
+        # impute missing values using different imputation methods
         method_results <- foreach(j=1:length(imputation_methods), .combine="rbind") %do% {
-          method <- imputation_methods[j]
-          #flog.info(paste('Method:', method,  sep=' '))
           
-          #flog.info(paste('iteration:', iteration, 'miss proportion:', prop, "method:", method, sep=" "))
+          method <- imputation_methods[j] 
           
-          #proportion_results <- foreach(h=1:nrow(proportions_df), .combine="rbind") %do% {
+          # log the total iteration ,method , percenatges and types of missgness 
           flog.debug(paste('Total iterations:', iteration_counter, "/", total_iterations, 'Data size:', n_rows, "x", n_cols, 'Method:', method, 'Missingness - Total:', total_miss, "MCAR:", mcar_miss, "MAR:", mar_miss, "MNAR:", mnar_miss, sep=' '))
           
-          
+          # calculate the computational time per method
+          start <- Sys.time ()
           imputed_data <- impute(data=miss_data, methods=method)
           
-          #COMPARING RESULTS USING ROOT MEAN SQUARE ERROR
-          results_Rsquare <- Rsquare_adjusted(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
+          time_diff <- Sys.time () - start
+          # log the computational time per method
+          flog.debug(paste('Total time:',time_diff ,'Method:', method, sep=' '))
           
-          #results_differences <- differences_models(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
+          #COMPARING RESULTS USING ROOT MEAN SQUARE ERROR and R square adjusted
+          
+          results_Rsquare <- Rsquare_adjusted(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
           nrmse_error <- missForest:: nrmse(imputed_data, miss_data, simulated_data)
           miss_model <- ""
+          
           if(mnar_miss>0){
             miss_model <- paste0(miss_model," MNAR ")
           }
@@ -102,33 +117,22 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
             miss_model <- paste0(miss_model," MCAR ")
           }
           
-          #results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(Result_diff=results_differences, NRMSE=nrmse_error))
+          # create a data frame with the results
           results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(Rsquare=results_Rsquare, NRMSE=nrmse_error))
           
           iteration_counter <- iteration_counter + 1
-          results_f
-          #}
-          #proportion_results
+          results_f 
           
         }
         method_results
-        
       }  
       
       proportion_results
       
     }
-    
-    #full_results
-    #flog.info("**** full results ****")
-    #write.csv(x=full_results, file=paste0(path, "results/result_NeWmnar_",n_rows,"_",n_cols, ".csv"), row.names=FALSE)
-    #  if (is.null(full_results)) {
-    #    full_results <- iteration_results
-    #  } else {
-    #    full_results <- rbind(full_results, iteration_results)
-    #  }
-    #}
   }
+
+
 
 
 write.csv(x=full_results, file=paste0(path, "results/results4.csv"), row.names=FALSE)
