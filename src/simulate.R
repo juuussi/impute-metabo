@@ -11,7 +11,7 @@ path <- "~/projects/impute-metabo/"
 #output_path <- '/home/users/mariekok/projects/impute-metabo/results/result.csv'
 source(paste0(path,"src/functions.R"))
 # start logging process by creating a logging file
-flog.appender(appender.tee(paste0(path,"results/logFile.log")))
+flog.appender(appender.tee(paste0(path,"results/logFile_allMethods.log")))
 flog.threshold(DEBUG)
 ###################################################################################
 # use dummy reference data (combination of different metabolomics data)
@@ -21,10 +21,10 @@ reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
 #define the sample space
 set.seed(1406)
-size_iterations <- 5
+size_iterations <- 2
 
 seq_rows <- seq(from=10, to=150, by= 30)
-seq_cols <-  seq(from=500, to=2000, by= 50)
+seq_cols <-  seq(from=500, to=2000, by= 100)
 
 
 data_rows <- sample(x=seq_rows, size=size_iterations)
@@ -35,17 +35,17 @@ n_iterations <- 1
 
 # define the percenatge of missigness
 #miss_proportions <- c(0.01, 0.05,0.1,0.3)
-miss_proportions <- c(0.2,0.4)
+miss_proportions <- c(0.2,0.3)
 
 proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 ################################################################################
 
 # Define the methods
 
-#imputation_methods <- c( "min")
+#imputation_methods <- c( "LLS")
 
-imputation_methods <- c("KNNImpute")
-#imputation_methods <- c( "min","mean","PPCA","LLS","svdImpute","KNNImpute")
+#imputation_methods <- c("RF")
+imputation_methods <- c( "min","mean","PPCA","LLS","svdImpute","KNNImpute")
 ################################################################################
 # calculate the total time of iterations
 total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
