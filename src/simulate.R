@@ -5,13 +5,13 @@ library(futile.logger)
 library(pcaMethods)
 ###################################################################################
 # start parallel
-registerDoMC(cores=30)
+registerDoMC(cores=5)
 # choose path
 path <- "~/projects/impute-metabo/"
 #output_path <- '/home/users/mariekok/projects/impute-metabo/results/result.csv'
 source(paste0(path,"src/functions.R"))
 # start logging process by creating a logging file
-flog.appender(appender.tee(paste0(path,"results/logFile_ALLMETHODS_042017.log")))
+flog.appender(appender.tee(paste0(path,"results/logFile_ALLMETHODS3_042017.log")))
 flog.threshold(DEBUG)
 ###################################################################################
 # use dummy reference data (combination of different metabolomics data)
@@ -21,10 +21,10 @@ reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
 #define the sample space
 set.seed(1406)
-size_iterations <- 15
+size_iterations <- 6
 # # 
- seq_rows <- seq(from=80, to=500, by= 100)
- seq_cols <-  seq(from=2500, to=6000, by= 500)
+ seq_rows <- seq(from=80, to=400, by= 50)
+ seq_cols <-  seq(from=1500, to=6000, by= 1100)
 
 data_rows <- sample(x=seq_rows, size=size_iterations,replace = TRUE)
 data_cols <- sample(x=seq_cols, size=size_iterations,replace = TRUE)
@@ -34,7 +34,7 @@ n_iterations <- 1
 
 # define the percenatge of missigness
 #miss_proportions <- c(0.01, 0.05,0.1,0.3)
-miss_proportions <- c(0.03,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8)
+miss_proportions <- c(0.08,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8)
 
 proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 ################################################################################
@@ -47,7 +47,7 @@ proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 
 #imputation_methods <- c( "RF","min","mean","KNNImpute")
 
-imputation_methods <- c( "RF","min","mean","PPCA","LLS","KNNImpute","EM")
+imputation_methods <- c( "RF","min","mean","PPCA","LLS","KNNImpute","BPCA","EM")
 ################################################################################
 # calculate the total time of iterations
 #total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
@@ -69,7 +69,7 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
     n_rows <- data_rows[r]
     n_cols <- data_cols[c]
     
-    iteration_results <- foreach(iteration=1:n_iterations, .combine="rbind") %dopar% {
+    iteration_results <- foreach(iteration=1:n_iterations, .combine="rbind") %do% {
       
       # simulate the data from the reference data(using multivariate normal distribution)
       simulated_data <- simulate_data(data=reference_data, nrow=n_rows, ncol=n_cols)
@@ -89,7 +89,7 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
         miss_data <- simulate_missingness(data=simulated_data, mcar=mcar_miss, mnar=mnar_miss, mar=mar_miss)
         
         # impute missing values using different imputation methods
-        method_results <- foreach(j=1:length(imputation_methods), .combine="rbind") %do% {
+        method_results <- foreach(j=1:length(imputation_methods), .combine="rbind") %dopar% {
           
           method <- imputation_methods[j] 
           
@@ -140,7 +140,6 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
         method_results
       }  
       
-      
       proportion_results
     }
 
@@ -149,5 +148,5 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
 
 
 
-write.csv(x=full_results, file=paste0(path, "results/results_ALLMETHODS_042017.csv"), row.names=FALSE)
+write.csv(x=full_results, file=paste0(path, "results/results_ALLMETHODS3_042017.csv"), row.names=FALSE)
 head(full_results,10)
