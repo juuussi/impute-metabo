@@ -214,6 +214,9 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left", 
 impute <- function(data, methods) {
   
   require(missForest)
+  require(pcaMethods)
+  require(impute)
+  require(PEMM)
   
   if (length(methods) != 1 & length(methods) != ncol(data)) {
     stop("Methods needs to be either one value or of the same length as number of columns in data.")
@@ -232,30 +235,37 @@ impute <- function(data, methods) {
   
   if ("PPCA" %in% methods) {
     # Do cross validation with ppca for component 2:10
-    esti <- kEstimate(data, method = "ppca", evalPcs = 2:10, nruncv=1, em="nrmsep")
+    esti <- kEstimate(Matrix= data, method = "ppca", evalPcs = 2:10, nruncv=1, em="nrmsep")
     # The best result was obtained for this number of PCs:esti$bestNPcs
-    pc <- pcaMethods::pca(data,nPcs=esti$bestNPcs, method="ppca")
+    pc <- pcaMethods::pca(object = data,nPcs=esti$bestNPcs, method="ppca")
     #index <- which(methods == "PPCA")
     imputed_data <- completeObs(pc)
   }
   if("LLS" %in% methods ){
     # local least squares imputation
-    lls_esti <- pcaMethods::llsImpute(data, k = 50, center = FALSE, completeObs = TRUE, correlation = "kendall", allVariables = TRUE, maxSteps = 100)
+    lls_esti <- pcaMethods::llsImpute(Matrix = data, k = 50, center = FALSE, completeObs = TRUE, correlation = "kendall", allVariables = TRUE, maxSteps = 100)
     imputed_data <- completeObs(lls_esti)
     
   } 
   
   if("svdImpute" %in% methods ){
-    
-    svd_esti <- pcaMethods::pca(data, method="svdImpute", nPcs=10, center = FALSE)
+    # Singular Value Decomposition
+    svd_esti <- pcaMethods::pca(object = data, method="svdImpute", nPcs=10, center = FALSE)
     imputed_data <- completeObs(svd_esti)
   } 
   
   if("KNNImpute" %in% methods ){
-    
-    KNN_esti <- impute::impute.knn(data)
+    # K-Nearest neighboors
+    KNN_esti <- impute::impute.knn(data = data)
     imputed_data <- KNN_esti$data
   } 
+  if ("EM" %in% methods){
+    # expectation minimazation algorithm
+    EM_esti = PEMM::PEMM_fun(X= data, phi=1)
+    imputed_data <- EM_esti$Xhat
+    
+  }
+    
   
   foreach (data_column=1:ncol(data)) %do% {
     method <- methods[data_column]
