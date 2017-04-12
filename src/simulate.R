@@ -11,7 +11,7 @@ path <- "~/projects/impute-metabo/"
 #output_path <- '/home/users/mariekok/projects/impute-metabo/results/result.csv'
 source(paste0(path,"src/functions.R"))
 # start logging process by creating a logging file
-flog.appender(appender.tee(paste0(path,"results/logFile_allMethods.log")))
+flog.appender(appender.tee(paste0(path,"results/logFile_ALLMETHODS_042017.log")))
 flog.threshold(DEBUG)
 ###################################################################################
 # use dummy reference data (combination of different metabolomics data)
@@ -21,21 +21,20 @@ reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
 #define the sample space
 set.seed(1406)
-size_iterations <- 2
+size_iterations <- 15
+# # 
+ seq_rows <- seq(from=80, to=500, by= 100)
+ seq_cols <-  seq(from=2500, to=6000, by= 500)
 
-seq_rows <- seq(from=10, to=150, by= 30)
-seq_cols <-  seq(from=500, to=2000, by= 100)
-
-
-data_rows <- sample(x=seq_rows, size=size_iterations)
-data_cols <- sample(x=seq_cols, size=size_iterations)
+data_rows <- sample(x=seq_rows, size=size_iterations,replace = TRUE)
+data_cols <- sample(x=seq_cols, size=size_iterations,replace = TRUE)
 n_iterations <- 1
 
 ################################################################################
 
 # define the percenatge of missigness
 #miss_proportions <- c(0.01, 0.05,0.1,0.3)
-miss_proportions <- c(0.2,0.3)
+miss_proportions <- c(0.03,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8)
 
 proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 ################################################################################
@@ -44,11 +43,15 @@ proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 
 #imputation_methods <- c( "LLS")
 
-#imputation_methods <- c("RF")
-imputation_methods <- c( "min","mean","PPCA","LLS","svdImpute","KNNImpute")
+#imputation_methods <- c("min","RF")
+
+#imputation_methods <- c( "RF","min","mean","KNNImpute")
+
+imputation_methods <- c( "RF","min","mean","PPCA","LLS","KNNImpute","EM")
 ################################################################################
 # calculate the total time of iterations
-total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
+#total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
+total_iterations <- size_iterations * n_iterations * nrow(proportions_df) * length(imputation_methods)
 
 ################################################################################
 
@@ -98,45 +101,53 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
           # replace missing values with zero
           miss_data <- replace_NA_to_0(miss_data)
           # impute the data
-          imputed_data <- impute(data=miss_data, methods=method)
           
-          time_diff <- Sys.time () - start
-          # log the computational time per method
-          flog.debug(paste('Total time:',time_diff ,'Method:', method, sep=' '))
-          
-          #COMPARING RESULTS USING ROOT MEAN SQUARE ERROR and R square adjusted
-          
-          results_Rsquare <- Rsquare_adjusted(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
-          nrmse_error <- missForest:: nrmse(imputed_data, miss_data, simulated_data)
-          miss_model <- ""
-          
-          if(mnar_miss>0){
-            miss_model <- paste0(miss_model," MNAR ")
-          }
-          if(mar_miss>0){
-            miss_model <- paste0(miss_model," MAR ")
-          }
-          if(mcar_miss>0){
-            miss_model <- paste0(miss_model," MCAR ")
-          }
-          
-          # create a data frame with the results
-          results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(Rsquare=results_Rsquare, NRMSE=nrmse_error))
-          
-          iteration_counter <- iteration_counter + 1
-          results_f 
-          
+          tryCatch({
+            imputed_data <- impute(data=miss_data, methods=method)
+            
+            
+            time_diff <- Sys.time () - start
+            # log the computational time per method
+            flog.debug(paste('Total time:',time_diff ,'Method:', method, sep=' '))
+            
+            #COMPARING RESULTS USING ROOT MEAN SQUARE ERROR and R square adjusted
+            
+            #results_Rsquare <- Rsquare_adjusted(original.data = simulated_data, missing.data = miss_data, imputed.data = imputed_data)
+            nrmse_error <- missForest:: nrmse(imputed_data, miss_data, simulated_data)
+            miss_model <- ""
+            
+            if(mnar_miss>0){
+              miss_model <- paste0(miss_model," MNAR ")
+            }
+            if(mar_miss>0){
+              miss_model <- paste0(miss_model," MAR ")
+            }
+            if(mcar_miss>0){
+              miss_model <- paste0(miss_model," MCAR ")
+            }
+            
+            # create a data frame with the results
+            results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(NRMSE=nrmse_error))
+            
+            iteration_counter <- iteration_counter + 1
+            results_f 
+          }, error=function(x) {
+            flog.debug(x)
+            results_f <- cbind(data.frame(Method=method, Miss=total_miss, MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(NRMSE=NA))
+            return(results_f)
+          })
         }
         method_results
       }  
       
-      proportion_results
       
+      proportion_results
     }
+
   }
 
 
 
 
-write.csv(x=full_results, file=paste0(path, "results/results.csv"), row.names=FALSE)
+write.csv(x=full_results, file=paste0(path, "results/results_ALLMETHODS_042017.csv"), row.names=FALSE)
 head(full_results,10)
