@@ -265,7 +265,15 @@ impute <- function(data, methods) {
     imputed_data <- EM_esti$Xhat
     
   }
-    
+    if ("BPCA" %in% methods){
+      # bayesian principal component analysis
+      pc <- pca(object = data, method="bpca", nPcs=10)
+
+      ## Get the estimated complete observations
+      imputed_data <- completeObs(pc)
+      
+      
+    }
   
   foreach (data_column=1:ncol(data)) %do% {
     method <- methods[data_column]
