@@ -48,7 +48,7 @@ proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 
 #imputation_methods <- c( "RF","min","mean","KNNImpute")
 
-imputation_methods <- c( "RF","min","mean","PPCA","LLS","KNNImpute","BPCA","EM")
+imputation_methods <- c( "RF","min","mean","LLS","KNNImpute","BPCA","EM")
 ################################################################################
 # calculate the total time of iterations
 #total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
@@ -77,7 +77,7 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
       
       
       # choose the percenatge of missigness 
-      proportion_results <- foreach(h=1:nrow(proportions_df), .combine="rbind") %dopar% {
+      proportion_results <- foreach(h=1:nrow(proportions_df), .combine="rbind", .inorder=FALSE) %dopar% {
         
         # seperate the percenatge of missigness per type of misssigness 
         mcar_miss <- proportions_df$MCAR[h]
@@ -90,7 +90,7 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
         miss_data <- simulate_missingness(data=simulated_data, mcar=mcar_miss, mnar=mnar_miss, mar=mar_miss)
         
         # impute missing values using different imputation methods
-        method_results <- foreach(j=1:length(imputation_methods), .combine="rbind") %do% {
+        method_results <- foreach(j=1:length(imputation_methods), .combine="rbind", .inorder=FALSE) %dopar% {
           
           method <- imputation_methods[j] 
           
@@ -104,12 +104,14 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
           # impute the data
           
           tryCatch({
+            flog.debug(paste('Starting imputing:','Method:', method, sep=' '))
+            
             imputed_data <- impute(data=miss_data, methods=method)
             
             
             time_diff <- Sys.time () - start
             # log the computational time per method
-            flog.debug(paste('Total time:',time_diff ,'Method:', method, sep=' '))
+            flog.debug(paste('Total impute time:',round(time_diff) ,'Method:', method, sep=' '))
             
             #COMPARING RESULTS USING ROOT MEAN SQUARE ERROR and R square adjusted
             
@@ -127,8 +129,14 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
               miss_model <- paste0(miss_model," MCAR ")
             }
             
+            time_diff2 <- Sys.time () - start
+            flog.debug(paste('Total nrmse time:',round(time_diff2) ,'Method:', method, sep=' '))
+            
             # create a data frame with the results
             results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols,Time_total=time_diff), data.frame(NRMSE=nrmse_error))
+            
+            time_diff3 <- Sys.time () - start
+            flog.debug(paste('Total result binding time:',round(time_diff3) ,'Method:', method, sep=' '))
             
             iteration_counter <- iteration_counter + 1
             results_f 
