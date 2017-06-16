@@ -5,13 +5,13 @@ library(futile.logger)
 library(pcaMethods)
 ###################################################################################
 # start parallel
-registerDoMC(cores=5)
+registerDoMC(cores=20)
 # choose path
 path <- "~/projects/impute-metabo/"
 #output_path <- '/home/users/mariekok/projects/impute-metabo/results/result.csv'
 source(paste0(path,"src/functions.R"))
 # start logging process by creating a logging file
-flog.appender(appender.tee(paste0(path,"results/logFile_ALLMETHODS3_042017.log")))
+flog.appender(appender.tee(paste0(path,"results/logFile_ALLMETHODS_ZERO_062017.log")))
 flog.threshold(DEBUG)
 ###################################################################################
 # use dummy reference data (combination of different metabolomics data)
@@ -21,10 +21,10 @@ reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 
 #define the sample space
 set.seed(1406)
-size_iterations <- 6
+size_iterations <- 1
 # # 
- seq_rows <- seq(from=80, to=400, by= 50)
- seq_cols <-  seq(from=1500, to=6000, by= 1100)
+ seq_rows <- seq(from=10, to=20, by= 5)
+ seq_cols <-  seq(from=30, to=50, by= 20)
 
 data_rows <- sample(x=seq_rows, size=size_iterations,replace = TRUE)
 data_cols <- sample(x=seq_cols, size=size_iterations,replace = TRUE)
@@ -34,7 +34,8 @@ n_iterations <- 1
 
 # define the percenatge of missigness
 #miss_proportions <- c(0.01, 0.05,0.1,0.3)
-miss_proportions <- c(0.08,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8)
+#miss_proportions <- c(0.08,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8)
+miss_proportions <- c(0.1,0.3)
 
 proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 ################################################################################
@@ -76,7 +77,7 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
       
       
       # choose the percenatge of missigness 
-      proportion_results <- foreach(h=1:nrow(proportions_df), .combine="rbind") %do% {
+      proportion_results <- foreach(h=1:nrow(proportions_df), .combine="rbind") %dopar% {
         
         # seperate the percenatge of missigness per type of misssigness 
         mcar_miss <- proportions_df$MCAR[h]
@@ -89,7 +90,7 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
         miss_data <- simulate_missingness(data=simulated_data, mcar=mcar_miss, mnar=mnar_miss, mar=mar_miss)
         
         # impute missing values using different imputation methods
-        method_results <- foreach(j=1:length(imputation_methods), .combine="rbind") %dopar% {
+        method_results <- foreach(j=1:length(imputation_methods), .combine="rbind") %do% {
           
           method <- imputation_methods[j] 
           
@@ -127,13 +128,13 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
             }
             
             # create a data frame with the results
-            results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(NRMSE=nrmse_error))
+            results_f <- cbind(data.frame(Method=method, Miss=total_miss,MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols,Time_total=time_diff), data.frame(NRMSE=nrmse_error))
             
             iteration_counter <- iteration_counter + 1
             results_f 
           }, error=function(x) {
             flog.debug(x)
-            results_f <- cbind(data.frame(Method=method, Miss=total_miss, MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols), data.frame(NRMSE=NA))
+            results_f <- cbind(data.frame(Method=method, Miss=total_miss, MissModel=miss_model, MNAR=mnar_miss, MCAR=mcar_miss, MAR=mar_miss, Iteration=iteration, Rows=n_rows, Cols=n_cols, Total_data=n_rows*n_cols,Time_total=time_diff), data.frame(NRMSE=NA))
             return(results_f)
           })
         }
@@ -148,5 +149,5 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
 
 
 
-write.csv(x=full_results, file=paste0(path, "results/results_ALLMETHODS3_042017.csv"), row.names=FALSE)
+write.csv(x=full_results, file=paste0(path, "results/results_ALLMETHODS_ZERO_062017.csv"), row.names=FALSE)
 head(full_results,10)
