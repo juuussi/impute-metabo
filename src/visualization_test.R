@@ -20,7 +20,7 @@ source(paste0(path,"src/functions.R"))
 #fileNames <- Sys.glob(paste0(path,"results/","results_RF_KNN_big_sample.csv"))
 
 
-fileNames <- Sys.glob(paste0(path,"results/","results_ALLMETHODS_ZERO_062017.csv"))
+fileNames <- Sys.glob(paste0(path,"results/","results_ALLMETHODS_ZERO_062017_4.csv"))
 
   # # read data
   # 
@@ -57,7 +57,7 @@ new <- results_new %>%
   spread(Type,Total_mean)%>%
   arrange(Percentage,Method)
 
-colnames(new)[4:ncol(new)] <- paste("Mean",colnames(new)[4:ncol(new)], sep = '_')
+colnames(new)[3:ncol(new)] <- paste("Mean",colnames(new)[3:ncol(new)])
 
 
 
@@ -67,9 +67,10 @@ colnames(new)[4:ncol(new)] <- paste("Mean",colnames(new)[4:ncol(new)], sep = '_'
 View(new)
 
 #   
-# ggplot(data=new, aes(x=Method,y=Error ,fill = Percentage) ) +
-#   geom_bar(stat = "identity",position="dodge")+
-#   facet_grid(.~ Miss)
+
+ggplot(data=results_new, aes(x=Type,y=Error,fill=Method) ) +
+  geom_bar(stat = "identity",position="dodge")+
+  facet_grid(.~ Percentage)
 # ###
 # 
 # library(ggplot2)
