@@ -50,9 +50,20 @@ new2 <- results_new %>%
 colnames(new2)[2:ncol(new2)] <- paste("Mean_Error",colnames(new2)[2:ncol(new2)], sep = "_" )
 
 ## add a column percenatge in total1
-new2$Percentage <- "combined_Perc"
+new2$Percentage <- "comb_Perc_Mean"
 new2 <- new2 %>% select(Method,Percentage,everything())
 
+new4 <- results_new %>%
+  group_by(Method,Type) %>%
+  dplyr::summarise(SDMethod = sd(Error,na.rm=TRUE))%>%
+  ungroup() %>%
+  spread(Type,SDMethod)%>% # it spreads the error through the columns
+  arrange(Method)
+colnames(new4)[2:ncol(new4)] <- paste("Mean_Error",colnames(new4)[2:ncol(new4)], sep = "_" )
+
+## add a column percenatge in total1
+new4$Percentage <- "comb_Perc_SD"
+new4 <- new4 %>% select(Method,Percentage,everything())
 
 
 #### CALCULATION OF TIME
@@ -65,7 +76,7 @@ new3 <- results_new %>%
 
 colnames(new3)[2:ncol(new3)] <- paste("Mean_Error",colnames(new3)[2:ncol(new3)], sep = "_" )
 ## add a column percenatge in new3
-new3$Percentage <- "combined_Time"
+new3$Percentage <- "comb_Perc_Time"
 new3 <- new3 %>% select(Method,Percentage,everything())
 
 
@@ -73,10 +84,10 @@ new3 <- new3 %>% select(Method,Percentage,everything())
 ## combine the 3 matrices
 
 
-Imputation_Matrix <- rbind.data.frame(new1,new2,new3)%>%
+Imputation_Matrix <- rbind.data.frame(new1,new2,new4,new3)%>%
   arrange(Method)
 
-
+Imputation_Matrix[,3:ncol(Imputation_Matrix)] <- round(Imputation_Matrix[,3:ncol(Imputation_Matrix)],digits = 3)
 
 View(Imputation_Matrix)
 
