@@ -17,7 +17,7 @@ source(paste0(path,"src/functions.R"))
 
 
 ## load the file
-fileNames <- Sys.glob(paste0(path,"results/","results_2it_zero.csv"))
+fileNames <- Sys.glob(paste0(path,"results/","results_test.csv"))
 
 # read cvs file
 results <- read.csv(fileNames, stringsAsFactors = FALSE)
@@ -102,14 +102,6 @@ Imputation_Matrix <- cbind(ImputationMatrix1,tmp)
 
 
 
-
-
-
-
-
-
-
-
 # #### CALCULATION OF TIME####
 
 ## Mean time
@@ -148,11 +140,6 @@ new_TimeSD$Percentage <- as.character(new_TimeSD$Percentage)
 timematrixSD<- rbind.data.frame(new_TimeSD, SD_TOTAL_Time)%>%dplyr::arrange(Method)
 
 
-
-
-
-
-
 ### final imputation matrix
 types <- as.character(unique(results_new$Type)) 
 
@@ -162,5 +149,40 @@ for (type in types){
   
 }
 Imputation_Matrix <- cbind.data.frame(Imputation_Matrix,timematrixMEAN[,ncol(timematrixMEAN)],timematrixSD[,ncol(timematrixSD)])
+
+######################################################################################################################################
+# -------------------------------------------------------------------------------------------------------------------------------------
+
+
+results_new$Type<-trimws(results_new$Type)
+
+TYPE <- unique(results_new$Type)
+PERCENTAGE <- unique(results_new$Percentage)
+
+df <- list()
+for(i in 1:length(TYPE)){
+  for(j in 1:length(PERCENTAGE)){
+    ERROR  <- data.frame(error =results_new$Error[results_new$Percentage == PERCENTAGE[j] & results_new$Type==TYPE[i]])
+    METHODS  <-data.frame(method = results_new$Method[results_new$Percentage == PERCENTAGE[j] & results_new$Type==TYPE[i]])
+    df <- c(list(cbind.data.frame(METHODS,ERROR)), df)
+    boxplot(ERROR$error ~ METHODS$method)
+    title(deparse(paste0(" Type : ",TYPE[i]," and Percentage : ",PERCENTAGE[j] )),	xlab="METHODS", ylab="NRMSE")
+    
+  }
+}
+
+
+
+
+
+
+
+# Some Statistics : Wilcoxon Signed rank test
+# PP <- list()
+# for (k in 1:length(df) ) {
+#   PP <-pairwise.wilcox.test(df[[i]]$error,as.character(df[[i]]$method), p.adj = "BH")
+#   
+# }
+
 
 
