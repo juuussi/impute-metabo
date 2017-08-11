@@ -22,7 +22,7 @@ miss_data <- simulate_missingness(data=simulated_data, mcar=0.30, mnar=0, mar=0)
 # -----------------------------------------Detect Type of Missigness  ---------------------------------
 #
 # This method creates binary matrix, in which the dataset consists of indicator variables 
-  # where a 1 is given if a value is present, and 0 if it isn't.
+  # where a 1 is given if a value isnot present, and 0 if it isinstall.package  .
   #Correlating these with each other and the original data can help determine 
   #if variables tend to be missing together (MAR) or not (MCAR).
 
@@ -76,4 +76,29 @@ View(MissingVar)
  MCARvariables <-setdiff(MissingVar$MissVar,MARvariables$ListMAR)
 
  MCARvariables <- data.frame(ListMCAR = MCARvariables)
-View(MCARvariables) 
+View(MCARvariables)
+# ----------------------------
+
+## left truncation MNAR 
+#Kolmogorov-Smirnov test providing a comparison of a fitted distribution with the empirical distribution
+# if the distributions are the same then p-values are small and that means they are left trancated if they are different then they are MAR
+library(truncgof)
+
+# Goodness of fit for left truncated data
+models <- list()
+Pval <- list()
+for (i in 1:nrow(MARvariables)){
+  
+xt <-na.omit(as.matrix(miss_data[,i]))
+threshold <- min(na.omit(as.matrix(miss_data[,i])))
+models[[i]] <- truncgof::ks.test(xt, "plnorm",list(meanlog = 2, sdlog = 1), H = threshold,alternative ="two.sided")
+Pval[[i]] <-models[[i]]$p.value
+
+}
+Pval <- as.numeric(as.character(Pval))
+Pval <- data.frame(pvalues= Pval,ListVar =MARvariables$ListMAR) 
+View(Pval)
+SigpVal <-Pval$pvalues[which(Pval$pvalues<0.05)]
+DetectMissMNAR <-MARvariables$ListMAR[which(Pval$pvalues<0.05)]
+
+MNARvariables <- data.frame(ListMNAR = DetectMissMNAR)
