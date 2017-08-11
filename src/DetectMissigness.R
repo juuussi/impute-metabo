@@ -14,7 +14,7 @@ source(paste0(path,"src/functions.R"))
 ###################################################################################
 # use dummy reference data (combination of different metabolomics data)
 reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
-simulated_data <- simulate_data(data=reference_data, nrow=150, ncol=2000)
+simulated_data <- simulate_data(data=reference_data, nrow=150, ncol=200)
 miss_data <- simulate_missingness(data=simulated_data, mcar=0.30, mnar=0, mar=0)
 
 
@@ -65,14 +65,15 @@ cor(y)
  tmp <- data.frame(do.call('rbind', strsplit(as.character(CorrelVariables$VarNames),'-',fixed=TRUE)))
  
  View(tmp)
-
- MARvariables <-data.frame(ListMAR=unique(sort(c(tmp$X1,tmp$X2),decreasing = F)))
+ MARvariables <-sort(unique(c(as.numeric(as.character(tmp$X1)),as.numeric(as.character(tmp$X2)))),decreasing = F)
+ MARvariables <- data.frame(ListMAR =MARvariables)
  View(MARvariables)
  
  colnames(y)<- 1:ncol(y)
  
  MissingVar <-data.frame(MissVar =1:ncol(y))
-
+View(MissingVar)
  MCARvariables <-setdiff(MissingVar$MissVar,MARvariables$ListMAR)
+
  MCARvariables <- data.frame(ListMCAR = MCARvariables)
- 
+View(MCARvariables) 
