@@ -14,7 +14,7 @@ source(paste0(path,"src/functions.R"))
 ###################################################################################
 # use dummy reference data (combination of different metabolomics data)
 reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
-simulated_data <- simulate_data(data=reference_data, nrow=150, ncol=200)
+simulated_data <- simulate_data(data=reference_data, nrow=15, ncol=20)
 miss_data <- simulate_missingness(data=simulated_data, mcar=0.30, mnar=0, mar=0)
 
 
@@ -81,24 +81,27 @@ View(MCARvariables)
 
 ## left truncation MNAR 
 #Kolmogorov-Smirnov test providing a comparison of a fitted distribution with the empirical distribution
-# if the distributions are the same then p-values are small and that means they are left trancated if they are different then they are MAR
+# if the distributions are the same then p-values are high and that means they are left trancated if they are different then they are MAR
 library(truncgof)
 
 # Goodness of fit for left truncated data
 models <- list()
 Pval <- list()
+Padj <-list()
 for (i in 1:nrow(MARvariables)){
   
 xt <-na.omit(as.matrix(miss_data[,i]))
 threshold <- min(na.omit(as.matrix(miss_data[,i])))
 models[[i]] <- truncgof::ks.test(xt, "plnorm",list(meanlog = 2, sdlog = 1), H = threshold,alternative ="two.sided")
 Pval[[i]] <-models[[i]]$p.value
-
+Padj[[i]]<-p.adjust(Pval[[i]], method = "fdr")
 }
-Pval <- as.numeric(as.character(Pval))
-Pval <- data.frame(pvalues= Pval,ListVar =MARvariables$ListMAR) 
-View(Pval)
-SigpVal <-Pval$pvalues[which(Pval$pvalues<0.05)]
-DetectMissMNAR <-MARvariables$ListMAR[which(Pval$pvalues<0.05)]
-
-MNARvariables <- data.frame(ListMNAR = DetectMissMNAR)
+Padj <- as.numeric(as.character(Padj))
+Padj <- data.frame(pvalues= Padj,ListVar =MARvariables$ListMAR) 
+View(Padj)
+SigpVal <-Padj$pvalues[which(Padj$pvalues<0.05)]
+DetectMissMAR2 <-data.frame(ListMar = MARvariables$ListMAR[which(Padj$pvalues<0.05)])
+MARvariables2 <- data.frame(ListMAR =DetectMissMAR2$ListMar)
+##
+MNARvariables <-setdiff(MARvariables$ListMAR,DetectMissMAR2$ListMar)
+MNARvariables <- data.frame(ListMNAR = MNARvariables)
