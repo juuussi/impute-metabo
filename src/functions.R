@@ -49,7 +49,7 @@ simulate_data <- function(data, nrow, ncol, ...) {
   
   require(MASS)
   
-  simulated_data <- matrix(mvrnorm(n=nrow*ncol, mu=colMeans(reference_data), Sigma=cov(data), ...), nrow=nrow, ncol=ncol)
+  simulated_data <- matrix(mvrnorm(n=nrow*ncol, mu=colMeans(data), Sigma=cov(data), ...), nrow=nrow, ncol=ncol)
   
   simulated_data
 }
@@ -207,7 +207,7 @@ simulate_missingness <- function(data, mcar=0, mar=0, mnar=0, mnar.type="left", 
 #' @return the matrix containing the imputed data
 #' @export
 #'
-#' @examples imputation_methods <- c("RF", "mean", "min")
+#' @examples 
 #' imputed_data <- impute(data=miss_data, methods=imputation_methods)
 #' #'####################################################
 
@@ -243,7 +243,7 @@ impute <- function(data, methods) {
   }
   if("LLS" %in% methods ){
     # local least squares imputation
-    lls_esti <- pcaMethods::llsImpute(Matrix = data, k = 50, center = FALSE, completeObs = TRUE, correlation = "kendall", allVariables = TRUE, maxSteps = 100)
+    lls_esti <- pcaMethods::llsImpute(Matrix = data, k = 10, center = TRUE, completeObs = TRUE, correlation = "pearson", allVariables = TRUE, maxSteps = 100)
     imputed_data <- completeObs(lls_esti)
     
   } 
@@ -265,35 +265,60 @@ impute <- function(data, methods) {
     imputed_data <- EM_esti$Xhat
     
   }
-    if ("BPCA" %in% methods){
-      # bayesian principal component analysis
-      pc <- pca(object = data, method="bpca", nPcs=10)
-
-      ## Get the estimated complete observations
-      imputed_data <- completeObs(pc)
-      
-      
-    }
-  
-  foreach (data_column=1:ncol(data)) %do% {
-    method <- methods[data_column]
+  if ("BPCA" %in% methods){
+    # bayesian principal component analysis
+    pc <-pcaMethods:: pca(object = data, method="bpca", nPcs=10)
     
-    if (method == "mean") {
-      impu_value <- mean(data[,data_column], na.rm=TRUE)
-      imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
-    }
+    ## Get the estimated complete observations
+    imputed_data <- completeObs(pc)
+   
     
-    if (method == "min") {
+  }
+  if ("min" %in% methods) {
+    foreach (data_column=1:ncol(data)) %do% {
+      method <- methods[data_column]
+      
       impu_value <- min(data[,data_column], na.rm=TRUE)
       imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
       
     }
-    
   }
   
-  imputed_data
+  if ("mean" %in% methods){
+    
+    foreach (data_column=1:ncol(data)) %do% {
+      method <- methods[data_column]
+      
+      
+      impu_value <- mean(data[,data_column], na.rm=TRUE)
+      imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+    }
+  }
   
+  
+  imputed_data
 }
+  
+  
+  
+
+
+# if (c("min", "mean") %in% methods){
+#    
+#    foreach (data_column=1:ncol(data)) %do% {
+#      method <- methods[data_column]
+#      
+#      if (method == "mean") {
+#        impu_value <- mean(data[,data_column], na.rm=TRUE)
+#        imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+#      }
+#      
+#      if (method == "min") {
+#        impu_value <- min(data[,data_column], na.rm=TRUE)
+#        imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+#        
+#      }
+
 
 ######### Function No6  ##################################
 
