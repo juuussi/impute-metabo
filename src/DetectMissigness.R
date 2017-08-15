@@ -1,8 +1,9 @@
-#rm(list = ls())
+rm(list = ls())
 # Detect missingness
 library(psych)
 library(dplyr)
 library(tidyr)
+library(truncgof)
 
 
 
@@ -15,7 +16,8 @@ source(paste0(path,"src/functions.R"))
 # use dummy reference data (combination of different metabolomics data)
 reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 simulated_data <- simulate_data(data=reference_data, nrow=15, ncol=20)
-miss_data <- simulate_missingness(data=simulated_data, mcar=, mnar=0, mar=0.03)
+miss_data <- simulate_missingness(data=simulated_data, mcar=0, mnar=0.2, mar=0)
+
 
 
 
@@ -40,6 +42,8 @@ y <- x[,cols]
 cor(y)
 
 
+# the list of the all missing variables
+MissingVar <-data.frame(MissVar = cols)
 #Now, looking at the relationship between the 
 #presence of missing values in each variable and the observed values
 #in other variables:
@@ -58,58 +62,76 @@ CI <- CorTest$ci
 CI$p <-round(CI$p,digits = 2)
 
 # find which variables are significally correlated
+
 DetectMiss <-which(CI$p<0.05)
-
-CorrelVariables <- data.frame(VarNames =rownames(CI)[DetectMiss])
-View(CorrelVariables)
-
-tmp <- data.frame(do.call('rbind', strsplit(as.character(CorrelVariables$VarNames),'-',fixed=TRUE)))
-
-View(tmp)
-
-MissingVar <-data.frame(MissVar =cols)
-
-find_var <-sort(unique(c(as.numeric(as.character(tmp$X1)),as.numeric(as.character(tmp$X2)))),decreasing = F)
-find_var <-data.frame(ListVar  = find_var)
-find_var2 <- is.element(find_var$ListVar,MissingVar$MissVar)
-
-View(find_var2)
-View(MissingVar)
-
-MAR_MNAR <- find_var[find_var2,]
-MAR_MNARvariables <-data.frame(ListMAR_MNAR = MAR_MNAR)
-
-MCARvariables <-setdiff(MissingVar$MissVar,MAR_MNARvariables$ListMAR_MNAR)
-MCARvariables <- data.frame(ListMCAR = MCARvariables)
-
-View(MCARvariables)
-# ----------------------------
-
-## left truncation MNAR 
-#Kolmogorov-Smirnov test providing a comparison of a fitted distribution with the empirical distribution
-# if the distributions are the same then p-values are high and that means they are left trancated if they are different then they are MAR
-library(truncgof)
-
-# Goodness of fit for left truncated data
-models <- list()
-Pval <- list()
-Padj <-list()
-for (i in 1:nrow(MAR_MNARvariables)){
+if(length(DetectMiss) > 0){
   
-  xt <-na.omit(as.matrix(miss_data[,i]))
-  threshold <- min(na.omit(as.matrix(miss_data[,i])))
-  models[[i]] <- truncgof::ks.test(xt, "plnorm",list(meanlog = 2, sdlog = 1), H = threshold,alternative ="two.sided")
-  Pval[[i]] <-models[[i]]$p.value
-  Padj[[i]]<-p.adjust(Pval[[i]], method = "fdr")
+  
+  
+  CorrelVariables <- data.frame(VarNames =rownames(CI)[DetectMiss])
+  
+  View(CorrelVariables)
+  
+  
+  
+  
+  # checking which of the columns have missing values from the pairs of correlated variables
+  tmp <- data.frame(do.call('rbind', strsplit(as.character(CorrelVariables$VarNames),'-',fixed=TRUE)))
+  find_var <-sort(unique(c(as.numeric(as.character(tmp$X1)),as.numeric(as.character(tmp$X2)))),decreasing = F)
+  find_var <-data.frame(ListVar  = find_var)
+  find_var2 <- data.frame(listTF = is.element(find_var$ListVar,MissingVar$MissVar))
+  
+  View(find_var2)
+  # View(MissingVar)
+  if (all(find_var2 == FALSE)){
+    MCARvariables <- data.frame(ListMCAR = MissingVar$MissVar)
+    
+    
+  }else{
+    MAR_MNAR <- find_var$ListVar[find_var2$listTF]
+    
+    
+    MAR_MNAR <- find_var[find_var2$listTF,]
+    MAR_MNARvariables <-data.frame(ListMAR_MNAR = MAR_MNAR)
+    
+    
+    MCARvariables <-setdiff(MissingVar$MissVar,MAR_MNARvariables$ListMAR_MNAR)
+    MCARvariables <- data.frame(ListMCAR = MCARvariables)
+    # ----------------------------
+    
+    ## left truncation MNAR 
+    #Kolmogorov-Smirnov test providing a comparison of a fitted distribution with the empirical distribution
+    # if the distributions are the same then p-values are high and that means they are left trancated if they are different then they are MAR
+    
+    # Goodness of fit for left truncated data
+    models <- list()
+    Pval <- list()
+    Padj <-list()
+    for (i in 1:nrow(MAR_MNARvariables)){
+      
+      xt <-na.omit(as.matrix(miss_data[,i]))
+      threshold <- min(na.omit(as.matrix(miss_data[,i])))
+      #models[[i]] <- truncgof::ad.test(xt, "plnorm",list(meanlog = mean(simulated_data), sdlog = sd(simulated_data)), H = threshold,alternative ="two.sided")
+      
+      models[[i]] <- truncgof:: ks.test(xt, "plnorm",list(meanlog = mean(simulated_data)), H = threshold,alternative ="less")
+      Pval[[i]] <-models[[i]]$p.value
+      Padj[[i]]<-p.adjust(Pval[[i]], method = "fdr")
+    }
+    Padj <- as.numeric(as.character(Padj))
+    Padj <- data.frame(pvalues= Padj,ListVar =MAR_MNARvariables$ListMAR_MNAR) 
+    View(Padj)
+    SigpVal <-Padj$pvalues[which(Padj$pvalues<0.05)]
+    DetectMissMAR2 <-data.frame(ListMar = MAR_MNARvariables$ListMAR_MNAR[which(Padj$pvalues<0.05)])
+    MARvariables <- data.frame(ListMAR =DetectMissMAR2$ListMar)
+    View(MARvariables)
+    ##
+    MNARvariables <-setdiff(MAR_MNARvariables$ListMAR_MNAR,MARvariables$ListMAR)
+    MNARvariables <- data.frame(ListMNAR = MNARvariables)
+    View(MNARvariables)
+    
+  }
+} else{
+  MCARvariables <- data.frame(ListMCAR = MissingVar$MissVar)
+  
 }
-Padj <- as.numeric(as.character(Padj))
-Padj <- data.frame(pvalues= Padj,ListVar =MAR_MNARvariables$ListMAR_MNAR) 
-View(Padj)
-SigpVal <-Padj$pvalues[which(Padj$pvalues<0.05)]
-DetectMissMAR2 <-data.frame(ListMar = MAR_MNARvariables$ListMAR_MNAR[which(Padj$pvalues<0.05)])
-MARvariables <- data.frame(ListMAR =DetectMissMAR2$ListMar)
-View(MARvariables)
-##
-MNARvariables <-setdiff(MAR_MNARvariables$ListMAR_MNAR,MARvariables$ListMAR)
-MNARvariables <- data.frame(ListMNAR = MNARvariables)
-View(MNARvariables)
+#View(MCARvariables)
