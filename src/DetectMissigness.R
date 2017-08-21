@@ -16,8 +16,8 @@ source(paste0(path,"src/functions.R"))
 # use dummy reference data (combination of different metabolomics data)
 reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 simulated_data <- simulate_data(data=reference_data, nrow=15, ncol=20)
-miss_data <- simulate_missingness(data=simulated_data, mcar=0, mnar=0.2, mar=0)
-
+miss_data <- simulate_missingness(data=simulated_data, mcar=0, mnar=0.3, mar=0.3)
+View(miss_data)
 
 
 
@@ -81,11 +81,11 @@ if(length(DetectMiss) > 0){
   find_var <-data.frame(ListVar  = find_var)
   find_var2 <- data.frame(listTF = is.element(find_var$ListVar,MissingVar$MissVar))
   
-  View(find_var2)
+  #View(find_var2)
   # View(MissingVar)
   if (all(find_var2 == FALSE)){
     MCARvariables <- data.frame(ListMCAR = MissingVar$MissVar)
-    
+    View(MCARvariables)
     
   }else{
     MAR_MNAR <- find_var$ListVar[find_var2$listTF]
@@ -97,6 +97,7 @@ if(length(DetectMiss) > 0){
     
     MCARvariables <-setdiff(MissingVar$MissVar,MAR_MNARvariables$ListMAR_MNAR)
     MCARvariables <- data.frame(ListMCAR = MCARvariables)
+    View(MCARvariables)
     # ----------------------------
     
     ## left truncation MNAR 
@@ -107,22 +108,29 @@ if(length(DetectMiss) > 0){
     models <- list()
     Pval <- list()
     Padj <-list()
+    
     for (i in 1:nrow(MAR_MNARvariables)){
       
       xt <-na.omit(as.matrix(miss_data[,i]))
-      threshold <- min(na.omit(as.matrix(miss_data[,i])))
-      #models[[i]] <- truncgof::ad.test(xt, "plnorm",list(meanlog = mean(simulated_data), sdlog = sd(simulated_data)), H = threshold,alternative ="two.sided")
+      threshold <- min(na.omit(as.matrix((miss_data[,i]))))
       
-      models[[i]] <- truncgof:: ks.test(xt, "plnorm",list(meanlog = mean(simulated_data)), H = threshold,alternative ="less")
+      #models[[i]] <- truncgof::ad.test(xt, "pnorm",list(meanlog = mean(simulated_data), sdlog = sd(simulated_data)), H = threshold,alternative ="two.sided")
+      models[[i]] <- truncgof::ks.test(xt, "pnorm",list(  mean(simulated_data),  sd(simulated_data)), H = threshold,  alternative ="two.sided")
+      
       Pval[[i]] <-models[[i]]$p.value
       Padj[[i]]<-p.adjust(Pval[[i]], method = "fdr")
+      
+      # models1[[i]] <- stats::ks.test(xt,"dnorm",alternative = "two.sided")
+      # Pval1[[i]] <-models1[[i]]$p.value
+      # Padj1[[i]]<-p.adjust(Pval1[[i]], method = "fdr")
     }
+    
     Padj <- as.numeric(as.character(Padj))
     Padj <- data.frame(pvalues= Padj,ListVar =MAR_MNARvariables$ListMAR_MNAR) 
     View(Padj)
-    SigpVal <-Padj$pvalues[which(Padj$pvalues<0.05)]
-    DetectMissMAR2 <-data.frame(ListMar = MAR_MNARvariables$ListMAR_MNAR[which(Padj$pvalues<0.05)])
-    MARvariables <- data.frame(ListMAR =DetectMissMAR2$ListMar)
+    #SigpVal <-Padj$pvalues[which(Padj$pvalues <= 0.05)]
+    MARvariables <-data.frame(ListMAR = MAR_MNARvariables$ListMAR_MNAR[which(Padj$pvalues<=0.05)])
+    #MARvariables <- data.frame(ListMAR =DetectMissMAR2$ListMar)
     View(MARvariables)
     ##
     MNARvariables <-setdiff(MAR_MNARvariables$ListMAR_MNAR,MARvariables$ListMAR)
@@ -132,6 +140,6 @@ if(length(DetectMiss) > 0){
   }
 } else{
   MCARvariables <- data.frame(ListMCAR = MissingVar$MissVar)
-  
+  View(MCARvariables)
 }
 #View(MCARvariables)
