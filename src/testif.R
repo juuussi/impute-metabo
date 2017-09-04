@@ -44,6 +44,7 @@ cor(y)
 
 # the list of the all missing variables
 MissingVar <-data.frame(MissVar = cols)
+
 #Now, looking at the relationship between the 
 #presence of missing values in each variable and the observed values
 #in other variables:
@@ -114,7 +115,10 @@ if(length(DetectMiss) > 0){
       
       
       xt <-na.omit(miss_data[,i])
-
+      if(length(xt > 3)){
+        
+        
+        
         
         threshold <- min(na.omit((miss_data[,i])))
         #  truncgof::dplot(xt, "pnorm", list(mean(simulated_data),  sd(simulated_data)), H = threshold, vertical = TRUE)
@@ -125,7 +129,7 @@ if(length(DetectMiss) > 0){
         Pval[[i]] <-models[[i]]$p.value
         Padj[[i]]<-p.adjust(Pval[[i]], method = "fdr")
         
-      }
+      
       
       Padj <- as.numeric(as.character(Padj))
       Padj <- data.frame(pvalues= Padj,ListVar =MAR_MNARvariables$ListMAR_MNAR) 
@@ -139,10 +143,11 @@ if(length(DetectMiss) > 0){
       MNARvariables <- data.frame(ListMNAR = MNARvariables)
       View(MNARvariables)
       
-    
+      }
+    }
+  else{ print("blalalalla")}
+    #cat("the vector conatings less than 3 values")}
   }
-  
-  
 } else{
   MCARvariables <- data.frame(ListMCAR = MissingVar$MissVar)
   View(MCARvariables)

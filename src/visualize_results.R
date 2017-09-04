@@ -20,7 +20,7 @@ for (fileName in fileNames){
   head(results)
   str(results)
   
-  p <- ggplot(data=results, aes(Method, error))
+  p <- ggplot(data=results, aes(Method, NRMSE))
   p <- p + geom_boxplot()
   p <- p + theme_bw() + facet_grid(.~Prop)
   

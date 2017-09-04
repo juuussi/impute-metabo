@@ -8,6 +8,7 @@ library(reshape2)
 library(dplyr)
 library(tidyr)
 library(matrixStats)
+library(VIM)
 registerDoMC(cores=1)
 #### path of theproject
 path <- "~/projects/impute-metabo/"
@@ -17,7 +18,7 @@ source(paste0(path,"src/functions.R"))
 
 
 ## load the file
-fileNames <- Sys.glob(paste0(path,"results/","results_test.csv"))
+fileNames <- Sys.glob(paste0(path,"results/","finalres0817.csv"))
 
 # read cvs file
 results <- read.csv(fileNames, stringsAsFactors = FALSE)
@@ -183,6 +184,5 @@ for(i in 1:length(TYPE)){
 #   PP <-pairwise.wilcox.test(df[[i]]$error,as.character(df[[i]]$method), p.adj = "BH")
 #   
 # }
-
 
 

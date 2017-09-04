@@ -5,13 +5,13 @@ library(futile.logger)
 library(pcaMethods)
 ###################################################################################
 # start parallel
-registerDoMC(cores=20)
+registerDoMC(cores=4)
 # choose path
 path <- "~/projects/impute-metabo/"
 #output_path <- '/home/users/mariekok/projects/impute-metabo/results/result.csv'
 source(paste0(path,"src/functions.R"))
 # start logging process by creating a logging file
-flog.appender(appender.tee(paste0(path,"results/logFile_ALLMETHODS_ZERO_062017.log")))
+flog.appender(appender.tee(paste0(path,"results/logFile_finalres.log")))
 flog.threshold(DEBUG)
 ###################################################################################
 # use dummy reference data (combination of different metabolomics data)
@@ -23,19 +23,19 @@ reference_data <- as.matrix(read.csv(paste0(path, "data/reference_data.csv")))
 set.seed(1406)
 size_iterations <- 1
 # # 
- seq_rows <- seq(from=10, to=20, by= 5)
- seq_cols <-  seq(from=30, to=50, by= 20)
+seq_rows <- seq(from=20, to=30, by= 2)
+seq_cols <-  seq(from=40, to=100, by= 5)
 
 data_rows <- sample(x=seq_rows, size=size_iterations,replace = TRUE)
 data_cols <- sample(x=seq_cols, size=size_iterations,replace = TRUE)
-n_iterations <- 1
+n_iterations <- 100
 
 ################################################################################
 
 # define the percenatge of missigness
 #miss_proportions <- c(0.01, 0.05,0.1,0.3)
 #miss_proportions <- c(0.08,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8)
-miss_proportions <- c(0.1,0.3)
+miss_proportions <- c(0.1,0.3,0.6,0.8)
 
 proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 ################################################################################
@@ -44,11 +44,11 @@ proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 
 #imputation_methods <- c( "LLS")
 
-#imputation_methods <- c("min","RF")
+#imputation_methods <- c("min","mean")
 
 #imputation_methods <- c( "RF","min","mean","KNNImpute")
 
-imputation_methods <- c( "RF","min","mean","LLS","KNNImpute","BPCA","EM")
+imputation_methods <- c("PPCA", "RF","min","mean","LLS","KNNImpute","BPCA","svdImpute")
 ################################################################################
 # calculate the total time of iterations
 #total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
@@ -66,7 +66,7 @@ iteration_counter <- 1
 full_results <- NULL
 full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
   
-  foreach(c=1:length(data_cols), .combine="rbind") %dopar% {
+  foreach(c=1:length(data_cols), .combine="rbind") %do% {
     n_rows <- data_rows[r]
     n_cols <- data_cols[c]
     
@@ -77,7 +77,7 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
       
       
       # choose the percenatge of missigness 
-      proportion_results <- foreach(h=1:nrow(proportions_df), .combine="rbind", .inorder=FALSE) %dopar% {
+      proportion_results <- foreach(h=1:nrow(proportions_df), .combine="rbind", .inorder=FALSE) %do% {
         
         # seperate the percenatge of missigness per type of misssigness 
         mcar_miss <- proportions_df$MCAR[h]
@@ -90,7 +90,7 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
         miss_data <- simulate_missingness(data=simulated_data, mcar=mcar_miss, mnar=mnar_miss, mar=mar_miss)
         
         # impute missing values using different imputation methods
-        method_results <- foreach(j=1:length(imputation_methods), .combine="rbind", .inorder=FALSE) %dopar% {
+        method_results <- foreach(j=1:length(imputation_methods), .combine="rbind", .inorder=FALSE) %do% {
           
           method <- imputation_methods[j] 
           
@@ -98,14 +98,14 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
           flog.debug(paste('Total iterations:', iteration_counter, "/", total_iterations, 'Data size:', n_rows, "x", n_cols, 'Method:', method, 'Missingness - Total:', total_miss, "MCAR:", mcar_miss, "MAR:", mar_miss, "MNAR:", mnar_miss, sep=' '))
           
           # calculate the computational time per method
-          start <- Sys.time ()
+          
           # replace missing values with zero
           miss_data <- replace_NA_to_0(miss_data)
           # impute the data
           
           tryCatch({
             flog.debug(paste('Starting imputing:','Method:', method, sep=' '))
-            
+            start <- Sys.time ()
             imputed_data <- impute(data=miss_data, methods=method)
             
             
@@ -120,13 +120,13 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
             miss_model <- ""
             
             if(mnar_miss>0){
-              miss_model <- paste0(miss_model," MNAR ")
+              miss_model <- paste0(miss_model,"MNAR")
             }
             if(mar_miss>0){
-              miss_model <- paste0(miss_model," MAR ")
+              miss_model <- paste0(miss_model,"MAR")
             }
             if(mcar_miss>0){
-              miss_model <- paste0(miss_model," MCAR ")
+              miss_model <- paste0(miss_model,"MCAR")
             }
             
             time_diff2 <- Sys.time () - start
@@ -151,11 +151,11 @@ full_results <- foreach(r=1:length(data_rows), .combine="rbind") %:%
       
       proportion_results
     }
-
+    
   }
 
 
 
 
-write.csv(x=full_results, file=paste0(path, "results/results_ALLMETHODS_ZERO_062017.csv"), row.names=FALSE)
+write.csv(x=full_results, file=paste0(path, "results/finalres0817.csv"), row.names=FALSE)
 head(full_results,10)
