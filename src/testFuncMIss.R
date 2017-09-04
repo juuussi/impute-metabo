@@ -4,69 +4,88 @@
 # if variables tend to be missing together (MAR) or not (MCAR).
 
 #'
-#' @param miss_data
+#' @param data ,matrix with missing values
 #'
-#' @return
+#' @return results ,list of all missing variables, the pairs or correlated variables and the MNAR_MAR Variables
 #' @export
 #'
-#' @examples
+#' @examples marietta <-detect.miss.MNAR.MAR (miss_data)
 
 
 detect.miss.MNAR.MAR <- function(data) {
 
 
 
-# Elements of x are 1 if a value in the data is missing and 0 if non-missing.
-
-x <- as.data.frame(abs(is.na(data)))
-
-
-
-# Extracting variables that have some missing values.
-# if the sd is zero all elements in column are missing
-cols <- which(sapply(x, sd) > 0)
-y    <- x[,cols]
-
-# the list of the all missing variables
-names(cols) <- NULL
-MissingVar <-data.frame(MissVar = cols)
-
-
-# Now, looking at the relationship between the 
-# presence of missing values in each variable and the observed values
-# in other variables:
-
-# correlation matrix
-corr_matrix <- stats:: cor(data, y, use="pairwise.complete.obs" ,method = "pearson")
-
-row.names(corr_matrix) <- 1:nrow(corr_matrix)
-colnames(corr_matrix)  <- 1:ncol(corr_matrix)
-
-# calculate the probability values from the correlations
-CorTest <- psych::corr.p(r=corr_matrix,n=nrow(data), adjust="fdr",alpha=.05)
-
-# Correlations between variables in data and y together with confidence interval and pvalues
-table_P_CI <- CorTest$ci
-table_P_CI$p <-round(table_P_CI$p,digits = 2)
-
-
-# find which variables are significally correlated
-
-DetectMiss  <-which(table_P_CI$p <= 0.05)
-
-# correlated Varibales pairs
-PairsCorVar <- data.frame(PairVar = rownames(table_P_CI)[DetectMiss])
-
-# checking which of the columns have missing values from the pairs of correlated variables
-tmp        <- data.frame(do.call('rbind', strsplit(as.character(PairsCorVar$PairVar),'-',fixed=TRUE)))
-ListCorVar <- data.frame(ListVar=union(as.numeric(as.character(tmp$X1)),as.numeric(as.character(tmp$X2))))
-# list of the variables that have missing values (TRUE) and complete variables (FALSE)
-MissVarTF  <- data.frame(listTF = is.element(ListCorVar$ListVar,MissingVar$MissVar))
-MAR.MNAR   <- ListCorVar$ListVar[MissVarTF$listTF]
-
-#
-results <- list(MissingVar = MissingVar,PairsCorVar = PairsCorVar,MAR_MNAR = MAR.MNAR)
-
-   return(results)
+  #  Elements of x are 1 if a value in the data is missing and 0 if non-missing.
+  
+  x <- as.data.frame(abs(is.na(data)))
+  
+  
+  
+  
+  
+  
+  
+  if(any(is.na(data))){
+    
+    
+    #  Extracting variables that have some missing values.
+    #  if the sd is zero all elements in column are missing
+    cols <- which(sapply(x, sd) > 0)
+    y    <- x[,cols]
+    
+    #  the list of the all missing variables
+    names(cols) <- NULL
+    MissingVar  <- data.frame(MissVar = cols)
+    
+    
+    #  Now, looking at the relationship between the 
+    #  presence of missing values in each variable and the observed values
+    #  in other variables:
+    
+    
+    #  correlation matrix
+    
+    
+    
+    corr_matrix <- stats:: cor(data, y, use="pairwise.complete.obs" ,method = "pearson")
+    
+    # change the row and col names
+    colnames(corr_matrix)  <- 1:ncol(corr_matrix)
+    row.names(corr_matrix) <- 1:nrow(corr_matrix)
+    
+    
+    #   calculate the probability values from the correlations
+    CorTest <- psych::corr.p(r=corr_matrix,n=nrow(data), adjust="fdr",alpha=.05)
+    
+    #   Correlations between variables in data and y together with confidence interval and pvalues
+    table_P_CI   <- CorTest$ci
+    table_P_CI$p <- round(table_P_CI$p,digits = 2)
+    
+    
+    #   find which variables are significally correlated
+    
+    DetectMiss  <- which(table_P_CI$p <= 0.05)
+    
+    #   correlated Varibales pairs
+    PairsCorVar <- data.frame(PairVar = rownames(table_P_CI)[DetectMiss])
+    
+    #   checking which of the columns have missing values from the pairs of correlated variables
+    tmp        <- data.frame(do.call('rbind', strsplit(as.character(PairsCorVar$PairVar),'-',fixed=TRUE)))
+    ListCorVar <- data.frame(ListVar=union(as.numeric(as.character(tmp$X1)),as.numeric(as.character(tmp$X2))))
+    #   list of the variables that have missing values (TRUE) and complete variables (FALSE)
+    MissVarTF  <- data.frame(listTF = is.element(ListCorVar$ListVar,MissingVar$MissVar))
+    MAR.MNAR   <- ListCorVar$ListVar[MissVarTF$listTF]
+    
+    #  final results : all missing variables, the pairs or correlated variables and the MNAR_MAR Variables
+    results <- list(MissingVar = MissingVar,PairsCorVar = PairsCorVar,MAR_MNAR = MAR.MNAR)
+    
+    return(results)
+    
+  }else{
+    print("matrix does not contain any missing values")
+  }
+  
+   
 }
 
