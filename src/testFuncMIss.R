@@ -211,7 +211,7 @@ detect.MCAR.MNAR.MAR <- function(MissVAr = missvar,MARMNAR = marmnar, data = mis
   }
   View(MCAR)
   
-  results <- list(MCAR = MCAR,MNAR = MNAR ,MAR = MAR)
+  results <- list(MCAR = MCAR,MNAR = MNAR ,MAR = MAR, Excluded_Var = list_ex_MAR_MNAR )
   return(results)
 }
 
