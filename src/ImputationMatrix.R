@@ -1,5 +1,6 @@
 
 rm(list = ls())
+graphics.off()
 ## list of libraries
 
 library(doMC)
@@ -102,7 +103,6 @@ tmp <- ImputationMatrix2[,3:ncol(ImputationMatrix2)]
 Imputation_Matrix <- cbind(ImputationMatrix1,tmp)
 
 
-
 # #### CALCULATION OF TIME####
 
 ## Mean time
@@ -153,8 +153,18 @@ Imputation_Matrix <- cbind.data.frame(Imputation_Matrix,timematrixMEAN[,ncol(tim
 
 ######################################################################################################################################
 # -------------------------------------------------------------------------------------------------------------------------------------
+# round the numbers
+x <- Imputation_Matrix
+y <- round(x[,sapply(x,is.numeric)] ,digits = 2)
+Imputation_Matrix <- cbind.data.frame(x[1:2],y)
+
+write.csv(x=Imputation_Matrix, file=paste0(path, "results/Imputation_Matrix.csv"), row.names=FALSE)
+####################################################################################################################################################
 
 
+
+ 
+pdf(paste0(path,"results/","boxplots.pdf"))
 results_new$Type<-trimws(results_new$Type)
 
 TYPE <- unique(results_new$Type)
@@ -163,7 +173,8 @@ PERCENTAGE <- unique(results_new$Percentage)
 df <- list()
 for(i in 1:length(TYPE)){
   for(j in 1:length(PERCENTAGE)){
-    ERROR  <- data.frame(error =results_new$Error[results_new$Percentage == PERCENTAGE[j] & results_new$Type==TYPE[i]])
+    
+    ERROR  <- data.frame(error = round(results_new$Error[results_new$Percentage == PERCENTAGE[j] & results_new$Type==TYPE[i]],digits = 2))
     METHODS  <-data.frame(method = results_new$Method[results_new$Percentage == PERCENTAGE[j] & results_new$Type==TYPE[i]])
     df <- c(list(cbind.data.frame(METHODS,ERROR)), df)
     boxplot(ERROR$error ~ METHODS$method)
@@ -173,7 +184,7 @@ for(i in 1:length(TYPE)){
 }
 
 
-
+dev.off()
 
 
 
