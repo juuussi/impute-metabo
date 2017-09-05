@@ -1,3 +1,37 @@
+
+#' Title check.miss
+#' check percenatge of missgness
+#' @param data 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+check.miss <- function(data = miss_data){
+  listMissVar <- numeric(0)
+  perc.col <- round(colMeans(is.na(miss_data)),digits = 2)
+  
+  for (j in 1:length(perc.col)){
+    
+    if(perc.col [j]> 0.80){
+      
+      cat('The variable has more than 80% Nas : ',j,"\n" )
+    }else{
+      
+      listMissVar <-  c(listMissVar,j)
+    }
+    
+    
+    
+  }
+  return(listMissVar)
+}
+
+
+
+
+
+
 #' Title  Detect MAR and MNAR missigness
 # It detects if the missigness depends on other varibales
 # Correlates an indicator matrix (0 not missing , 1 missing) with  the original data that can help determine
@@ -13,18 +47,12 @@
 
 
 detect.miss.MNAR.MAR <- function(data) {
-
-
-
+  
+  listMissVar <- check.miss(data)
+   data <- data[,listMissVar]
   #  Elements of x are 1 if a value in the data is missing and 0 if non-missing.
   
   x <- as.data.frame(abs(is.na(data)))
-  
-  
-  
-  
-  
-  
   
   if(any(is.na(data))){
     
@@ -86,7 +114,7 @@ detect.miss.MNAR.MAR <- function(data) {
     print("matrix does not contain any missing values")
   }
   
-   
+  
 }
 
 
@@ -106,8 +134,8 @@ detect.MCAR.MNAR.MAR <- function(MissVAr = missvar,MARMNAR = marmnar, data = mis
   if(length(missvar) > 0){
     
     
-   
-      if (length(marmnar) == 0) {
+    
+    if (length(marmnar) == 0) {
       
       
       MCAR <- data.frame(ListMCAR = missvar)
@@ -146,7 +174,7 @@ detect.MCAR.MNAR.MAR <- function(MissVAr = missvar,MARMNAR = marmnar, data = mis
           
           threshold <- min(na.omit(marmnar_df[,i]))
           #  truncgof::dplot(xt, "pnorm", list(mean(simulated_data),  sd(simulated_data)), H = threshold, vertical = TRUE)
-                    models <- c(models, list(truncgof::ks.test(xt, "pnorm",list(mean(simulated_data),  sd(simulated_data)), H = threshold,  alternative ="two.sided")))
+          models <- c(models, list(truncgof::ks.test(xt, "pnorm",list(mean(simulated_data),  sd(simulated_data)), H = threshold,  alternative ="two.sided")))
           
           Pval <- c(Pval, tail(models,1)[[1]]$p.value)
           
@@ -160,9 +188,7 @@ detect.MCAR.MNAR.MAR <- function(MissVAr = missvar,MARMNAR = marmnar, data = mis
           
         }
         
-        
       }
-      
       
       
       if  (length(list_ex_MAR_MNAR )== 0){
@@ -180,7 +206,7 @@ detect.MCAR.MNAR.MAR <- function(MissVAr = missvar,MARMNAR = marmnar, data = mis
         Padj <- p.adjust(Pval, method = "fdr")
         
         Padj <- data.frame(pvalues= Padj,ListVar = NewMAR_MNAR) 
-      
+        
         MAR <-data.frame(ListMAR = NewMAR_MNAR[which(Padj$pvalues<=0.05)])
         View(MAR)
         ##
@@ -191,18 +217,18 @@ detect.MCAR.MNAR.MAR <- function(MissVAr = missvar,MARMNAR = marmnar, data = mis
       
       
     }
-      
-      
-    } else{
-      MCAR <- data.frame(ListMCAR = missvar)
-      View(MCAR)
-    }
+    
+    
+  } else{
+    MCAR <- data.frame(ListMCAR = missvar)
     View(MCAR)
-    
-      
- 
+  }
+  View(MCAR)
   
-    
+  
+  
+  
+  
   results <- list(MCAR = MCAR,MNAR = MNAR ,MAR = MAR, Excluded_Var = list_ex_MAR_MNAR )
   return(results)
 }
