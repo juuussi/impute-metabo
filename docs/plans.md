@@ -39,10 +39,15 @@
 - data: data matrix of the data to be analyzed for missingness
 
 ### returns
-- vector with lentgh = ncol(data), each element describing the type of detected missingness for each column of the data. Possible values "NONE", "MCAR", "MAR" or "MNAR"
+- vector with length = ncol(data), each element describing the type of detected missingness for each column of the data. Possible values "NONE", "MCAR", "MAR" or "MNAR"
 
+## select_imputation_method(types)
 
+### arguments
+- type: vector with each element describing the type of missingness. Possible values "NONE", "MCAR", "MAR" or "MNAR"
 
+### returns
+- vector with length = length(types), each element describing the imputation method for each element of the types. Example values "min", "mean", "PPCA" or "KNN"
 
 ## impute(data, methods)
 

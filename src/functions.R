@@ -222,15 +222,17 @@ impute <- function(data, methods) {
     stop("Methods needs to be either one value or of the same length as number of columns in data.")
   }
   
-  imputed_data <- data
+  results_data <- data
   
   if (length(methods) == 1) {
     methods <- rep(methods, times=ncol(data))
   }
+  
   if ("RF" %in% methods) {
-    rf_imputed_data <- missForest::missForest(xmis = data,maxiter = 10,verbose = TRUE)$ximp
+    imputed_data <- missForest::missForest(xmis = data,maxiter = 10,verbose = TRUE)$ximp
     index <- which(methods == "RF")
-    imputed_data[,index] <- rf_imputed_data[,index]
+    results_data[,index] <- imputed_data[,index]
+    
   }
   
   if ("PPCA" %in% methods) {
@@ -240,11 +242,19 @@ impute <- function(data, methods) {
     pc <- pcaMethods::pca(object = data,nPcs=esti$bestNPcs, method="ppca")
     #index <- which(methods == "PPCA")
     imputed_data <- completeObs(pc)
+    
+    index <- which(methods == "PPCA")
+    results_data[,index] <- imputed_data[,index]
+    
   }
   if("LLS" %in% methods ){
     # local least squares imputation
     lls_esti <- pcaMethods::llsImpute(Matrix = data, k = 10, center = TRUE, completeObs = TRUE, correlation = "pearson", allVariables = TRUE, maxSteps = 100)
     imputed_data <- completeObs(lls_esti)
+    
+    index <- which(methods == "LLS")
+    results_data[,index] <- imputed_data[,index]
+    
     
   } 
   
@@ -252,17 +262,29 @@ impute <- function(data, methods) {
     # Singular Value Decomposition
     svd_esti <- pcaMethods::pca(object = data, method="svdImpute", nPcs=10, center = FALSE)
     imputed_data <- completeObs(svd_esti)
+    
+    index <- which(methods == "svdImpute")
+    results_data[,index] <- imputed_data[,index]
+    
   } 
   
   if("KNNImpute" %in% methods ){
     # K-Nearest neighboors
     KNN_esti <- impute::impute.knn(data = data)
     imputed_data <- KNN_esti$data
+    
+    index <- which(methods == "KNNImpute")
+    results_data[,index] <- imputed_data[,index]
+    
   } 
   if ("EM" %in% methods){
     # expectation minimazation algorithm
     EM_esti = PEMM::PEMM_fun(X= data, phi=1)
     imputed_data <- EM_esti$Xhat
+    
+    index <- which(methods == "EM")
+    results_data[,index] <- imputed_data[,index]
+    
     
   }
   if ("BPCA" %in% methods){
@@ -271,36 +293,45 @@ impute <- function(data, methods) {
     
     ## Get the estimated complete observations
     imputed_data <- completeObs(pc)
-   
+    
+    index <- which(methods == "BPCA")
+    results_data[,index] <- imputed_data[,index]
     
   }
   if ("min" %in% methods) {
-    foreach (data_column=1:ncol(data)) %do% {
+    #foreach (data_column=1:ncol(data)) %do% {
+    
+    foreach (data_column=which(methods == "min")) %do% {
       method <- methods[data_column]
       
       impu_value <- min(data[,data_column], na.rm=TRUE)
       imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
       
     }
+    index <- which(methods == "min")
+    results_data[,index] <- imputed_data[,index]
+    
   }
   
   if ("mean" %in% methods){
     
-    foreach (data_column=1:ncol(data)) %do% {
+    #foreach (data_column=1:ncol(data)) %do% {
+    foreach (data_column=which(methods == "mean")) %do% {
       method <- methods[data_column]
-      
-      
       impu_value <- mean(data[,data_column], na.rm=TRUE)
       imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
     }
+    index <- which(methods == "mean")
+    results_data[,index] <- imputed_data[,index]
+    
   }
   
   
-  imputed_data
+  results_data
 }
-  
-  
-  
+
+
+
 
 
 # if (c("min", "mean") %in% methods){

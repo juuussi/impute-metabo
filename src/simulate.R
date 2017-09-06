@@ -5,7 +5,7 @@ library(futile.logger)
 library(pcaMethods)
 ###################################################################################
 # start parallel
-registerDoMC(cores=4)
+registerDoMC(cores=35)
 # choose path
 path <- "~/projects/impute-metabo/"
 #output_path <- '/home/users/mariekok/projects/impute-metabo/results/result.csv'
@@ -28,14 +28,15 @@ seq_cols <-  seq(from=40, to=100, by= 5)
 
 data_rows <- sample(x=seq_rows, size=size_iterations,replace = TRUE)
 data_cols <- sample(x=seq_cols, size=size_iterations,replace = TRUE)
-n_iterations <- 100
+n_iterations <- 1
 
 ################################################################################
 
 # define the percenatge of missigness
 #miss_proportions <- c(0.01, 0.05,0.1,0.3)
 #miss_proportions <- c(0.08,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8)
-miss_proportions <- c(0.1,0.3,0.6,0.8)
+#miss_proportions <- c(0.1,0.3,0.6,0.8)
+miss_proportions <- c(0.1)
 
 proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 ################################################################################
@@ -44,11 +45,11 @@ proportions_df <- missingness_proportions(miss_proportions=miss_proportions)
 
 #imputation_methods <- c( "LLS")
 
-#imputation_methods <- c("min","mean")
+imputation_methods <- c("min","mean", "RF")
 
 #imputation_methods <- c( "RF","min","mean","KNNImpute")
 
-imputation_methods <- c("PPCA", "RF","min","mean","LLS","KNNImpute","BPCA","svdImpute")
+#imputation_methods <- c("PPCA", "RF","min","mean","LLS","KNNImpute","BPCA","svdImpute")
 ################################################################################
 # calculate the total time of iterations
 #total_iterations <- length(data_rows) * length(data_cols) * n_iterations * nrow(proportions_df) * length(imputation_methods)
