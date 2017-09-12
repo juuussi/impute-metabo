@@ -221,7 +221,7 @@ impute <- function(data, methods) {
   if (length(methods) != 1 & length(methods) != ncol(data)) {
     stop("Methods needs to be either one value or of the same length as number of columns in data.")
   }
-  
+  imputed_data <- matrix(NA,nrow = nrow(data),ncol = ncol(data))
   results_data <- data
   
   if (length(methods) == 1) {
@@ -301,36 +301,48 @@ impute <- function(data, methods) {
   if ("min" %in% methods) {
     #foreach (data_column=1:ncol(data)) %do% {
     
-    foreach (data_column=which(methods == "min")) %do% {
-      method <- methods[data_column]
-      
-      impu_value <- min(data[,data_column], na.rm=TRUE)
-      imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
-      
+    # foreach (data_column=which(methods == "min")) %do% {
+    #   method <- methods[data_column]
+    #   
+    #   impu_value <- min(data[,data_column], na.rm=TRUE)
+    #   imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+    #   
+    # }
+    
+    
+    for (i in 1:ncol(data)){
+      data[is.na(data[,i]),i] <- round(min(data[,i],na.rm = TRUE))
     }
+    
     index <- which(methods == "min")
-    results_data[,index] <- imputed_data[,index]
+    results_data[,index] <- data[,index]
     
   }
   
   if ("mean" %in% methods){
+    # 
+    # #foreach (data_column=1:ncol(data)) %do% {
+    # foreach (data_column=which(methods == "mean")) %do% {
+    #   method <- methods[data_column]
+    #   impu_value <- mean(data[,data_column], na.rm=TRUE)
+    #   imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+    # }
+    # index <- which(methods == "mean")
+    # results_data[,index] <- imputed_data[,index]
+    # 
     
-    #foreach (data_column=1:ncol(data)) %do% {
-    foreach (data_column=which(methods == "mean")) %do% {
-      method <- methods[data_column]
-      impu_value <- mean(data[,data_column], na.rm=TRUE)
-      imputed_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+    for (i in 1:ncol(data)){
+      data[is.na(data[,i]),i] <- round(mean(data[,i],na.rm = TRUE))
     }
     index <- which(methods == "mean")
-    results_data[,index] <- imputed_data[,index]
+    results_data[,index] <- data[,index]
     
   }
   
   
+  
   results_data
 }
-
-
 
 
 ######### Function No6  ##################################
