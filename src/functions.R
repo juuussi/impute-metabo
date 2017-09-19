@@ -658,6 +658,7 @@ detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ){
   return(results)
 }
 
+######### Function No12  ##################################
 
 
 #' Title detect_missingness_type
@@ -695,6 +696,46 @@ detect_missingness_type <- function(missigness){
 
 
 
+######### Function No12  ##################################
+
+
+#' Title select_imputation_method
+#'
+#' @param types 
+#' @param data 
+#'
+#' @return imputed_data_list
+#' @export
+#'
+#' @examples
+select_imputation_method <- function(types,data){
+  imputed_data <-matrix(NA,nrow = nrow(data),ncol = ncol(data))
+  imputed_data_list <- list()
+  
+  for (i in 1:length(types)){
+    if(types[i]== "MCAR"){
+      imputed_data  <- impute(data,"mean")
+    }else if(types[i] == "MAR"){
+      imputed_data  <- impute(data,"mean") 
+      
+    }else if (types[i] == "MNAR"){
+      imputed_data <- impute(data,"min") 
+      
+      
+    }else if(types[i]== "NONE"){
+      imputed_data <- data
+      
+      
+    }else if(types[i]== "EX"){
+      imputed_data <- 0
+      
+    }
+    imputed_data_list <- c(imputed_data_list, list(imputed_data))
+    
+  }
+  return(imputed_data_list)
+  
+}
 
 
 
