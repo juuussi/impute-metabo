@@ -346,6 +346,13 @@ impute <- function(data, methods) {
     
   }
   
+  if ("data" %in% methods){
+    
+    
+    index <- which(methods == "data")
+    results_data[,index] <-  data[,index]
+    
+  }
   
   
   results_data
@@ -724,7 +731,7 @@ select_imputation_method <- function(types){
       
       
     }else if(types[i]== "NONE"){
-      methods_names   <- "0"
+      methods_names   <- "data"
       
       
     }else if(types[i]== "EX"){
