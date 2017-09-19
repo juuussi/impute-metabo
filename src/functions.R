@@ -338,6 +338,13 @@ impute <- function(data, methods) {
     results_data[,index] <- data[,index]
     
   }
+  if ("0" %in% methods){
+   
+    
+    index <- which(methods == "0")
+    results_data[,index] <- 0
+    
+  }
   
   
   
@@ -708,20 +715,20 @@ select_imputation_method <- function(types){
   
   for (i in 1:length(types)){
     if(types[i]== "MCAR"){
-      methods_names  <- "mean"
+      methods_names   <- "mean"
     }else if(types[i] == "MAR"){
-      methods_names  <- "mean"
+      methods_names   <- "mean"
       
     }else if (types[i] == "MNAR"){
-      methods_names  <- "min"
+      methods_names   <- "min"
       
       
     }else if(types[i]== "NONE"){
-      methods_names  <- NULL
+      methods_names   <- "0"
       
       
     }else if(types[i]== "EX"){
-      methods_names  <- NULL
+      methods_names   <- "0"
       
     }
     method_vector <- c(method_vector, methods_names)
