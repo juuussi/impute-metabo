@@ -727,7 +727,7 @@ select_imputation_method <- function(types){
       
       
     }else if(types[i]== "EX"){
-      methods  <- 0
+      methods  <- NULL
       
     }
     method_vector <- c(method_vector, methods)
@@ -737,4 +737,4 @@ select_imputation_method <- function(types){
   
 }
 
-
+impute()
