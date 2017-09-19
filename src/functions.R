@@ -394,35 +394,29 @@ differences_models <- function(original.data, missing.data, imputed.data){
 #' Title replace_NA_to_0
 #'A function that replaces missing values to zero in a matrix 
 #' when the percentage of missingness in each column is equal or greater than 0.8
-#' @param missing.data 
+#' @param data 
 #'
-#' @return missing.data
+#' @return data
 #' @export
 #'
 #' @examples
 #' 
 #' ####################################################
-replace_NA_to_0 <- function(missing.data) {
+replace_NA_to_0 <- function(data) {
+  perc.col    <- round(colMeans(is.na(data)),digits = 2)
   
   # initialize
-  col_nan <- NULL
-  total_length_col <- NULL
-  percentage_nan<- NULL
+  
   # loop every column
-  for (i in col(missing.data)){
-    # check how many rows in every column have NA
-    col_nan[i] <- length(which(is.na(missing.data[,i])))
-    total_length_col[i] <- length(missing.data[,i])
-    #calculate the percentage of NA of every column
-    percentage_nan[i] <- col_nan[i]/total_length_col[i]
+  for (i in col(data)){
+    
     # if the percenatge of NA every column is above 0.8 replace with zero
-    if (percentage_nan[i] >= 0.8){
-      missing.data[is.na(missing.data[,i]),i] <- 0
+    if (perc.col[i] >= 0.80){
+      data[is.na(data[,i]),i] <- 0
     }
   }
-  missing.data
+  return(data)
 }
-
 
 
 ######### Function No9  ##################################
