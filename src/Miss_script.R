@@ -34,10 +34,8 @@ missigness <- detect.MCAR.MNAR.MAR (miss_data,MissingVar,MAR_MNAR)
 listvector <- detect_missingness_type(missigness) 
 
 
- aaa <- select_imputation_method(listvector)
+aaa <- select_imputation_method(listvector)
 
-test_d<- impute(miss_data,aaa)
-
-
+test_d <- impute(miss_data,aaa)
 
 
