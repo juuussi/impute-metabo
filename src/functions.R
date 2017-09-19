@@ -703,32 +703,32 @@ detect_missingness_type <- function(missigness){
 #'
 #' @examples
 select_imputation_method <- function(types){
-  methods <- rep(NA,length(types))
+  methods_names <- rep(NA,length(types))
   method_vector <- numeric(0)
   
   for (i in 1:length(types)){
     if(types[i]== "MCAR"){
-      methods  <- "mean"
+      methods_names  <- "mean"
     }else if(types[i] == "MAR"){
-      methods  <- "mean"
+      methods_names  <- "mean"
       
     }else if (types[i] == "MNAR"){
-      methods  <- "min"
+      methods_names  <- "min"
       
       
     }else if(types[i]== "NONE"){
-      methods  <- NULL
+      methods_names  <- NULL
       
       
     }else if(types[i]== "EX"){
-      methods  <- NULL
+      methods_names  <- NULL
       
     }
-    method_vector <- c(method_vector, methods)
+    method_vector <- c(method_vector, methods_names)
     
   }
   return(method_vector)
   
 }
 
-impute()
+
