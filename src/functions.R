@@ -708,35 +708,33 @@ detect_missingness_type <- function(missigness){
 #' @export
 #'
 #' @examples
-select_imputation_method <- function(types,data){
-  imputed_data <-matrix(NA,nrow = nrow(data),ncol = ncol(data))
-  imputed_data_list <- list()
+select_imputation_method <- function(types){
+  methods <- rep(NA,length(types))
+  method_vector <- numeric(0)
   
   for (i in 1:length(types)){
     if(types[i]== "MCAR"){
-      imputed_data  <- impute(data,"mean")
+      methods  <- "mean"
     }else if(types[i] == "MAR"){
-      imputed_data  <- impute(data,"mean") 
+      methods  <- "mean"
       
     }else if (types[i] == "MNAR"){
-      imputed_data <- impute(data,"min") 
+      methods  <- "min"
       
       
     }else if(types[i]== "NONE"){
-      imputed_data <- data
+      methods  <- NULL
       
       
     }else if(types[i]== "EX"){
-      imputed_data <- 0
+      methods  <- 0
       
     }
-    imputed_data_list <- c(imputed_data_list, list(imputed_data))
+    method_vector <- c(method_vector, methods)
     
   }
-  return(imputed_data_list)
+  return(method_vector)
   
 }
-
-
 
 
