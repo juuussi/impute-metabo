@@ -320,15 +320,14 @@ impute <- function(data, methods) {
   if ("0" %in% methods){
     
     
-    index <- which(methods == "0")
-    results_data[,index] <- 0
-    
+    index <- which(methods == "EX")
+    results_data[,index] <-  data[,index]    
   }
   
   if ("data" %in% methods){
     
     
-    index <- which(methods == "data")
+    index <- which(methods == "NONE")
     results_data[,index] <-  data[,index]
     
   }
@@ -368,9 +367,12 @@ Rsquare_adjusted <- function(original.data, missing.data, imputed.data){
 
 #' Title Differences_models
 #' Calculates the  differences  between simulated(reference) data and imputed data
-#' @param data1 = simulated data matrix
-#' @param data2 = data matrix with missing values
-#' @param data3 = imputed data matrix
+#' @param data1 =
+#' simulated data matrix
+#' @param data2 
+#' data matrix with missing values
+#' @param data3 
+#' imputed data matrix
 #'
 #' @return
 #' @export differences
@@ -416,7 +418,8 @@ replace_NA_to_0 <- function(data) {
 
 #' Title check.miss
 #' check the perce
-#' @param data  data matrix
+#' @param data  ,
+#' data matrix
 #'
 #' @return listVar
 #'  list of 3 vectors
@@ -427,7 +430,7 @@ replace_NA_to_0 <- function(data) {
 #'
 #' @examples
 
-check.miss <- function(data){
+check.miss <- function(data,percentage = 0.80){
   if (is.data.frame(data)) {
     data <- as.matrix(data)
     
@@ -446,16 +449,17 @@ check.miss <- function(data){
   
   for (j in 1:length(perc.col)){
     
-    if(perc.col [j] > 0.80){
-      ExcludedVar <- c(ExcludedVar,j)
-      cat('The variable has more than 80% Nas : ',j,"\n" )
-    }else if(perc.col [j] == 0){
-      
-      
+    if(perc.col [j] == 0){
       CompleteVar <- c(CompleteVar,j)
-    }else{
+    }
+    if(perc.col [j] >= percentage){
+      ExcludedVar <- c(ExcludedVar,j)
+      cat('The variable: ',j ,' has a % miss  value:' , perc.col [j] ,"\n" )
+      
+    }else {
       MissingVar <- c(MissingVar,j)
     }
+    
   }
   
   listVar <- list( MissingVar = MissingVar , ExcludedVar = ExcludedVar, CompleteVar = CompleteVar )
@@ -471,8 +475,11 @@ check.miss <- function(data){
 # Kabacoff, Robert I. R in Action. manning, 2010.
 
 #'
-#' @param data ,matrix with missing values
-#'
+#' @param data ,
+#' matrix with missing values
+#' @param alpha, 
+#' significance level ,  default is 0.05
+#' 
 #' @return results 
 #' list of vectors :
 #' MissingVar  = vector containing the columns numbers of the data matrix with missing values that are less than 80 % NAs,
@@ -484,7 +491,7 @@ check.miss <- function(data){
 #' @examples marietta <-detect.miss.MNAR.MAR (miss_data)
 
 
-detect.miss.MNAR.MAR <- function(data) {
+detect.miss.MNAR.MAR <- function(data,alpha=0.05) {
   if (is.data.frame(data)) {
     data <- as.matrix(data)
   }
@@ -525,11 +532,11 @@ detect.miss.MNAR.MAR <- function(data) {
     CorTest     <- psych::corr.p(r=corr_matrix,n=nrow(data), adjust="fdr",alpha=.05)
     
     #   Correlations between variables in data and y together with confidence interval and pvalues
-    table_P_CI  <- round(CorTest$ci,digits = 2)
+    table_P_CI  <- CorTest$ci
     
     #   find which variables are significally correlated
     
-    SigPvalues  <- which(table_P_CI$p <= 0.05)
+    SigPvalues  <- which(table_P_CI$p <= alpha)
     
     #   correlated Varibales pairs
     PairsCorVar <- data.frame(PairVar = rownames(table_P_CI)[SigPvalues])
@@ -556,12 +563,17 @@ detect.miss.MNAR.MAR <- function(data) {
 ######### Function No11  ##################################
 
 #' Title detect.MCAR.MNAR.MAR
-#'
+#' @param data ,
+#'  data matrix
 #' @param MissingVar 
 #' vector containing the columns numbers of the data matrix with missing values that are less than 80 % (use the detect.miss.MNAR.MAR function)
 #' @param MAR_MNAR 
 #'  vector containing the columns with missing values that have MAR or MNAR missigness (use the detect.miss.MNAR.MAR function)
-#' @param data 
+#' 
+#' @param alpha , 
+#' Significance level ,  default is 0.05
+#' @param percentage
+#  the percenatge of NAs in the MAR_MNAR variables, default 0.6 (above that threshold the ks.test doesnt work)
 #'
 #' @return results
 #' list of  vectors :
@@ -574,7 +586,7 @@ detect.miss.MNAR.MAR <- function(data) {
 #' @export
 #'
 #' @examples
-detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ){
+detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ,alpha = 0.05, percentage = 0.6){
   
   MAR  <- numeric(0)
   MNAR <- numeric(0)
@@ -610,7 +622,7 @@ detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ){
       
       for (i in 1:length(MAR_MNAR)){
         # the KS test doesnt work for the 60 % NAs per column
-        if (perc.col[i] < 0.60){
+        if (perc.col[i] < percentage){
           
           xt     <- na.omit( marmnar_mat[,i])
           threshold <- min(na.omit(marmnar_mat[,i]))
@@ -629,13 +641,13 @@ detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ){
       if  (length(rm_MAR_MNAR )== 0){
         # adjust p values obtained from KS test using fdr correction 
         Padj <- p.adjust(Pval, method = "fdr")
-        MAR  <- MAR_MNAR[which(Padj <= 0.05)]
+        MAR  <- MAR_MNAR[which(Padj <= alpha)]
         MNAR <- setdiff(MAR_MNAR,MAR)
       }else {
         #  p values adjusted excluding the variables have MNAR or MAR that have been excluded because more than 60% NAs 
         NewMAR_MNAR <- setdiff(MAR_MNAR,rm_MAR_MNAR)
         Padj <- p.adjust(Pval, method = "fdr")
-        MAR  <- NewMAR_MNAR[which(Padj <= 0.05)]
+        MAR  <- NewMAR_MNAR[which(Padj <= alpha)]
         MNAR <- setdiff(NewMAR_MNAR,MAR)
       }
     }
@@ -710,11 +722,11 @@ select_imputation_method <- function(types){
       
       
     }else if(types[i]== "NONE"){
-      methods_names   <- "data"
+      methods_names   <- "NONE"
       
       
     }else if(types[i]== "EX"){
-      methods_names   <- "0"
+      methods_names   <- "EX"
       
     }
     method_vector <- c(method_vector, methods_names)
@@ -725,3 +737,30 @@ select_imputation_method <- function(types){
 }
 
 
+######### Function No13  ##################################
+
+#' Title Run.miss.data
+#' pipeline for estimating missing data
+#' detecting type of missingness (MCAR,MNAR,MAR)
+#' impute them
+#'
+#' @param data 
+#' data matrix with missing values (NAs)
+#'
+#' @return imputed_data
+#' data matrix samedimensions as data with missing values being imputed
+#' @export
+#'
+#' @examples
+Run.miss.data <-function(data){
+  
+  tmp <- detect.miss.MNAR.MAR(data)
+  MissingVar <- tmp[[1]]
+  MAR_MNAR <- tmp[[3]]
+  missigness <- detect.MCAR.MNAR.MAR (data,MissingVar,MAR_MNAR)
+  listMiss <- detect_missingness_type(missigness) 
+  listmethods <- select_imputation_method(listMiss)
+  imputed_data <- impute(data,listmethods)
+  return(imputed_data)
+  
+}
