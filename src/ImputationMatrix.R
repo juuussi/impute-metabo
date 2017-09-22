@@ -18,7 +18,7 @@ source(paste0(path,"src/functions.R"))
 
 
 ## load the file
-fileNames <- Sys.glob(paste0(path,"results/","finalres0817.csv"))
+fileNames <- Sys.glob(paste0(path,"results/","finalres0917_4.csv"))
 
 # read cvs file
 results <- read.csv(fileNames, stringsAsFactors = FALSE)
@@ -41,7 +41,8 @@ new_MEAN_TOTAL <- results_new %>%
   group_by(Method,Percentage) %>%
   dplyr::summarise(Total_Mean = mean(Error,na.rm=TRUE))#%>%
 
-new_mean <-  cbind.data.frame(new_mean,Total_mean=new_MEAN_TOTAL$Total_Mean) 
+new_mean <-  cbind.data.frame(new_mean,Total_mean=new_MEAN_TOTAL$Total_Mean)
+new_mean <-new_mean %>% dplyr::select(Method,Percentage,Total_mean,everything())
 
 MEAN_TOTAL <- results_new %>%
   group_by(Method) %>%
@@ -50,13 +51,25 @@ MEAN_TOTAL <- results_new %>%
 MEAN_TOTAL$Percentage <- "comb_Perc"
 MEAN_TOTAL <- MEAN_TOTAL %>% dplyr::select(Method,Percentage,everything())
 
-## create the TOTAL_MEANmatrix with equal number of columns as the new mean
-sad_MEAN_TOTAL <- data.frame(matrix(NA, ncol=ncol(new_mean), nrow=nrow(MEAN_TOTAL)))
-colnames(sad_MEAN_TOTAL) <- c(colnames(new_mean))
-sad_MEAN_TOTAL[,c(1,2,ncol(new_mean))] <- MEAN_TOTAL
+# ## create the TOTAL_MEANmatrix with equal number of columns as the new mean
+# sad_MEAN_TOTAL <- data.frame(matrix(NA, ncol=ncol(new_mean), nrow=nrow(MEAN_TOTAL)))
+# colnames(sad_MEAN_TOTAL) <- c(colnames(new_mean))
+# sad_MEAN_TOTAL[,c(1,2,ncol(new_mean))] <- MEAN_TOTAL
+# ImputationMatrix1 <- rbind(new_mean, sad_MEAN_TOTAL)%>%
+#   arrange(Method)
+# # ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+ Mean_percol <- new_mean %>%
+   group_by(Method) %>%
+    dplyr::summarise_at(vars(starts_with("Mean")),mean)
 
-ImputationMatrix1 <- rbind(new_mean, sad_MEAN_TOTAL)%>%
-  arrange(Method)
+
+ tmp <-cbind(MEAN_TOTAL,Mean_percol[,2:length(Mean_percol)])
+ colnames(tmp) <- c(colnames(new_mean))
+
+
+ 
+ ImputationMatrix1 <- rbind(new_mean, tmp)%>%
+   arrange(Method)
 
 ###### calculate the SD error per type an per percentage and per method
 
@@ -68,6 +81,9 @@ new_sd <- results_new %>%
   arrange(Method)
 #change the column names
 colnames(new_sd)[3:ncol(new_sd)] <- paste("sd_Error",colnames(new_sd)[3:ncol(new_sd)], sep = "_" )
+
+
+
 ##### calclulate the SD error for  ALL the percenatges in total per method
 
 new_SD_TOTAL <- results_new %>%
@@ -75,6 +91,7 @@ new_SD_TOTAL <- results_new %>%
   dplyr::summarise(Total_sd = sd(Error,na.rm=TRUE))#%>%
   
 new_sd <-  cbind.data.frame(new_sd,Total_sd=new_SD_TOTAL$Total_sd) 
+new_sd <-new_sd %>% dplyr::select(Method,Percentage,Total_sd,everything())
 
 # ## add a column with total percenatge of the sd error
 SD_TOTAL <- results_new %>%
@@ -85,23 +102,35 @@ SD_TOTAL$Percentage <- "comb_Perc"
 SD_TOTAL <- SD_TOTAL %>% dplyr::select(Method,Percentage,everything())
 
 
-# ## create the SD_TOTAL matrix with equal number of columns as the new sd
-sad_SD_TOTAL <- data.frame(matrix(NA, ncol=ncol(new_sd), nrow=nrow(SD_TOTAL)))
-colnames(sad_SD_TOTAL) <- c(colnames(new_sd))
+# # ## create the SD_TOTAL matrix with equal number of columns as the new sd
+# sad_SD_TOTAL <- data.frame(matrix(NA, ncol=ncol(new_sd), nrow=nrow(SD_TOTAL)))
+# colnames(sad_SD_TOTAL) <- c(colnames(new_sd))
+# 
+# sad_SD_TOTAL[,c(1,2,ncol(new_sd))] <- SD_TOTAL
+# 
+# ImputationMatrix2 <- rbind(new_sd, sad_SD_TOTAL)%>%
+#   arrange(Method)
 
-sad_SD_TOTAL[,c(1,2,ncol(new_sd))] <- SD_TOTAL
+# # ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤
+sd_percol <- new_sd %>%
+  group_by(Method) %>%
+  dplyr::summarise_at(vars(starts_with("sd")),sd)
 
-ImputationMatrix2 <- rbind(new_sd, sad_SD_TOTAL)%>%
+
+tmp2 <-cbind(SD_TOTAL,sd_percol[,2:length(sd_percol)])
+colnames(tmp2) <- c(colnames(new_sd))
+
+
+
+ImputationMatrix2 <- rbind(new_sd, tmp2)%>%
   arrange(Method)
 
-
-
 ## combine the 2 matrices
-tmp <- ImputationMatrix2[,3:ncol(ImputationMatrix2)]
+tmp3 <- ImputationMatrix2[,3:ncol(ImputationMatrix2)]
 
-Imputation_Matrix <- cbind(ImputationMatrix1,tmp)
+Imputation_Matrix <- cbind(ImputationMatrix1,tmp3)
 
-
+Imputation_Matrix <-Imputation_Matrix %>% dplyr::select(Method,Percentage,Total_mean,Total_sd,everything())
 
 # #### CALCULATION OF TIME####
 
@@ -142,13 +171,15 @@ timematrixSD<- rbind.data.frame(new_TimeSD, SD_TOTAL_Time)%>%dplyr::arrange(Meth
 
 
 ### final imputation matrix
-types <- as.character(unique(results_new$Type)) 
+types <- as.character(unique(results_new$Type))
 
 for (type in types){
-  
+
   Imputation_Matrix <- Imputation_Matrix %>% dplyr:: select(Method,Percentage,Total_mean,Total_sd,ends_with(type),everything())
-  
+
 }
+
+Imputation_Matrix <- Imputation_Matrix %>% dplyr:: select(Method,Percentage,Total_mean,Total_sd,Mean_Error_MCAR,sd_Error_MCAR,Mean_Error_MAR,sd_Error_MAR,Mean_Error_MNAR,sd_Error_MNAR,everything())
 Imputation_Matrix <- cbind.data.frame(Imputation_Matrix,timematrixMEAN[,ncol(timematrixMEAN)],timematrixSD[,ncol(timematrixSD)])
 
 ######################################################################################################################################
