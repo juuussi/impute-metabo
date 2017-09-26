@@ -756,7 +756,9 @@ select_imputation_method <- function(types){
 #'
 #' @examples
 Run.miss.data <-function(data,alpha = 0.05, percentage = 0.6){
-  
+  start <- Sys.time ()
+  oldw <- getOption("warn")
+  options(warn = -1)
   tmp <- detect.miss.MNAR.MAR(data,alpha)
   MissingVar <- tmp[[1]]
   MAR_MNAR <- tmp[[3]]
@@ -764,6 +766,8 @@ Run.miss.data <-function(data,alpha = 0.05, percentage = 0.6){
   listMiss <- detect_missingness_type(missigness) 
   listmethods <- select_imputation_method(listMiss)
   imputed_data <- impute(data,listmethods)
+  time_diff <- Sys.time () - start
+  cat("Total computational time: ",round(time_diff,digits = 2), "\n")
   return(imputed_data)
-  
+  options(warn = oldw)
 }
