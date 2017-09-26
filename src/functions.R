@@ -746,18 +746,21 @@ select_imputation_method <- function(types){
 #'
 #' @param data 
 #' data matrix with missing values (NAs)
-#'
+#' @param alpha
+#' significance level,default 0.05
+#' @param pecentage
+#' the percenatge of NAs in the MAR_MNAR variables, default 0.6 (above that threshold the ks.test doesnt work)
 #' @return imputed_data
 #' data matrix samedimensions as data with missing values being imputed
 #' @export
 #'
 #' @examples
-Run.miss.data <-function(data){
+Run.miss.data <-function(data,alpha = 0.05, percentage = 0.6){
   
-  tmp <- detect.miss.MNAR.MAR(data)
+  tmp <- detect.miss.MNAR.MAR(data,alpha)
   MissingVar <- tmp[[1]]
   MAR_MNAR <- tmp[[3]]
-  missigness <- detect.MCAR.MNAR.MAR (data,MissingVar,MAR_MNAR)
+  missigness <- detect.MCAR.MNAR.MAR (data,MissingVar,MAR_MNAR,alpha, percentage)
   listMiss <- detect_missingness_type(missigness) 
   listmethods <- select_imputation_method(listMiss)
   imputed_data <- impute(data,listmethods)
