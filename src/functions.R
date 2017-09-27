@@ -312,19 +312,19 @@ impute <- function(data, methods) {
     imputed_data <- data
     foreach (data_column=which(methods == "mean")) %do% {
       method <- methods[data_column]
-      impu_value <- mean(data[,data_column], na.rm=TRUE)
+      impu_value <- round(mean(data[,data_column], na.rm=TRUE),digits = 2)
       results_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
     }
     
   }
-  if ("0" %in% methods){
+  if ("EX" %in% methods){
     
     
     index <- which(methods == "EX")
     results_data[,index] <-  data[,index]    
   }
   
-  if ("data" %in% methods){
+  if ("NONE" %in% methods){
     
     
     index <- which(methods == "NONE")
@@ -632,7 +632,7 @@ detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ,alpha = 0.05, perce
           Pval <- c(Pval, tail(models,1)[[1]]$p.value)
           
         }else{
-          cat("Too many NAs  variable the MAR_MNAR is excluded: ",MAR_MNAR [i], "\n")
+          cat("Variable the MAR_MNAR is excluded: ",MAR_MNAR [i],"percentage % of NAs:",perc.col[i], "\n")
           marmnar_mat[is.na(marmnar_mat[,i]),i] <- 0
           # list of exluded variables above 60% missigness
           rm_MAR_MNAR <- c(rm_MAR_MNAR, MAR_MNAR [i])
@@ -768,6 +768,7 @@ Run.miss.data <-function(data,alpha = 0.05, percentage = 0.6){
   imputed_data <- impute(data,listmethods)
   time_diff <- Sys.time () - start
   cat("Total computational time: ",round(time_diff,digits = 2), "\n")
+  cat("missigness vector: ",listMiss, "\n")
   return(imputed_data)
   options(warn = oldw)
 }
