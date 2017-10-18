@@ -22,20 +22,18 @@ Q5 <-round(quantiles_vec[[5]],digits = 2)
 
 
 
-p.breaks <- c(Q5,Q4,Q3, Q2, Q1)
-
-totalmean$Breaks <- cut(x=totalmean$Total_mean, breaks=p.breaks, labels=paste0("< ", as.character(p.breaks)[1:(length(p.breaks)-1)]), include.lowest=TRUE)
-palette <- c("#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d")
+p.breaks <-rev( c(Q5,Q4,Q3, Q2, Q1))
+totalmean$Breaks <- cut(x=totalmean$Total_mean, breaks=p.breaks, labels=paste0("< ", as.character(p.breaks)[2:(length(p.breaks))]),include.lowest=TRUE)
+palette <-rev( c("#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d"))
 #palette <- c("#ffffff", "#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d")
 
-             
 p <- ggplot(totalmean, aes(x=totalmean$Method, y=totalmean$Percentage))
 
 p <- p + geom_tile(aes(fill = factor(Breaks)), colour = "white") 
 p <- p + scale_fill_manual("Error Range", values=palette)
 #p <- p + scale_x_discrete(limits=totalmean$Method)
 #p <- p + scale_y_discrete(limits=totalmean$Percentage)
-p <- p + ggtitle("Total Mean") + xlab("Methods") + ylab("Percentage of total Missing Values ")
+p <- p + ggtitle("Total Mean") + xlab("") + ylab("Percentage of total Missing Values ")
 p <- p + theme_bw() + theme(axis.line = element_line(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank()      , panel.background = element_blank()) 
 p <- p + theme(strip.background = element_blank())
 p <- p + theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -65,11 +63,11 @@ Q5 <-round(quantiles_vec[[5]],digits = 2)
 
 
 
-p.breaks <- c(Q5,Q4,Q3, Q2, Q1)
-
-MCARmean$Breaks <- cut(x=MCARmean$Mean_Error_MCAR, breaks=p.breaks, labels=paste0("< ", as.character(p.breaks)[1:(length(p.breaks)-1)]), include.lowest=TRUE)
-palette <- c("#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d")
+p.breaks <-rev( c(Q5,Q4,Q3, Q2, Q1))
+MCARmean$Breaks <- cut(x=MCARmean$Mean_Error_MCAR, breaks=p.breaks, labels=paste0("< ", as.character(p.breaks)[2:(length(p.breaks))]),include.lowest=TRUE)
+palette <-rev( c("#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d"))
 #palette <- c("#ffffff", "#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d")
+
 
 
 p1 <- ggplot(MCARmean, aes(x=MCARmean$Method, y=MCARmean$Percentage))
@@ -78,7 +76,7 @@ p1 <- p1 + geom_tile(aes(fill = factor(Breaks)), colour = "white")
 p1 <- p1 + scale_fill_manual("Error Range", values=palette)
 #p <- p + scale_x_discrete(limits=totalmean$Method)
 #p <- p + scale_y_discrete(limits=totalmean$Percentage)
-p1 <- p1 + ggtitle("MCAR Mean") + xlab("") + ylab("Percentage of total Missing Values ")
+p1 <- p1 + ggtitle("MCAR Mean") + xlab("Methods") + ylab("Percentage of total Missing Values ")
 p1 <- p1 + theme_bw() + theme(axis.line = element_line(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank()      , panel.background = element_blank()) 
 p1 <- p1 + theme(strip.background = element_blank())
 p1 <- p1 + theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -106,10 +104,10 @@ Q5 <-round(quantiles_vec[[5]],digits = 2)
 
 
 
-p.breaks <- c(Q5,Q4,Q3, Q2, Q1)
+p.breaks <-rev( c(Q5,Q4,Q3, Q2, Q1))
 
-MARmean$Breaks <- cut(x=MARmean$Mean_Error_MAR, breaks=p.breaks, labels=paste0("< ", as.character(p.breaks)[1:(length(p.breaks)-1)]), include.lowest=TRUE)
-palette <- c("#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d")
+MARmean$Breaks <- cut(x=MARmean$Mean_Error_MAR, breaks=p.breaks, labels=paste0("< ", as.character(p.breaks)[2:(length(p.breaks))]),include.lowest=TRUE)
+palette <-rev( c("#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d"))
 #palette <- c("#ffffff", "#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d")
 
 
@@ -149,12 +147,10 @@ Q5 <-round(quantiles_vec[[5]],digits = 2)
 
 
 
-p.breaks <- c(Q5,Q4,Q3, Q2, Q1)
 
-MNARmean$Breaks <- cut(x=MNARmean$Mean_Error_MNAR, breaks=p.breaks, labels=paste0("< ", as.character(p.breaks)[1:(length(p.breaks)-1)]), include.lowest=TRUE)
-palette <- c("#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d")
-#palette <- c("#ffffff", "#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d")
-
+p.breaks <-rev( c(Q5,Q4,Q3, Q2, Q1))
+MNARmean$Breaks <- cut(x=MNARmean$Mean_Error_MNAR, breaks=p.breaks, labels=paste0("< ", as.character(p.breaks)[2:(length(p.breaks))]),include.lowest=TRUE)
+palette <-rev( c("#f1eef6", "#bdc9e1", "#74a9cf", "#2b8cbe", "#045a8d"))
 
 p3 <- ggplot(MNARmean, aes(x=MNARmean$Method, y=MNARmean$Percentage))
 
