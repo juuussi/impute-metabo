@@ -182,6 +182,10 @@ for (type in types){
 Imputation_Matrix <- Imputation_Matrix %>% dplyr:: select(Method,Percentage,Total_mean,Total_sd,Mean_Error_MCAR,sd_Error_MCAR,Mean_Error_MAR,sd_Error_MAR,Mean_Error_MNAR,sd_Error_MNAR,everything())
 Imputation_Matrix <- cbind.data.frame(Imputation_Matrix,timematrixMEAN[,ncol(timematrixMEAN)],timematrixSD[,ncol(timematrixSD)])
 
+#Imputation_Matrix_final <-  round(Imputation_Matrix,digits = 2)
+
+
+write.csv(x=Imputation_Matrix_final,file = paste0(path,"results/ImputationMatrix.csv"))
 ######################################################################################################################################
 # -------------------------------------------------------------------------------------------------------------------------------------
 
