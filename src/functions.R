@@ -307,12 +307,30 @@ impute <- function(data, methods) {
     }
     
   } 
+  if ("halfmin" %in% methods) {
+    imputed_data <- data
+    foreach (data_column=which(methods == "halfmin")) %do% {
+      method <- methods[data_column]
+      impu_value <- (min(data[,data_column], na.rm=TRUE)/2)
+      results_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+    }
+    
+  } 
   
   if ("mean" %in% methods){
     imputed_data <- data
     foreach (data_column=which(methods == "mean")) %do% {
       method <- methods[data_column]
       impu_value <- round(mean(data[,data_column], na.rm=TRUE),digits = 2)
+      results_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
+    }
+    
+  }
+  if ("zero" %in% methods){
+    imputed_data <- data
+    foreach (data_column=which(methods == "zero")) %do% {
+      method <- methods[data_column]
+      impu_value <- 0
       results_data[is.na(imputed_data[,data_column]), data_column] <- impu_value
     }
     
@@ -653,9 +671,22 @@ detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ,alpha = 0.05, perce
     }
   } 
   Miss_Var <-  check.miss(data)
-  results <- list(MCAR = MCAR,MNAR = MNAR ,MAR = MAR, Excluded_marmnar = rm_MAR_MNAR , ExcludedVar = Miss_Var[[2]], CompleteVar = Miss_Var[[3]])
-  return(results)
+  if (percentage >= 0.6){
+    ExcludedVar <- Miss_Var[[2]]
+    MNARnew     <- sort(c(MNAR,ExcludedVar,rm_MAR_MNAR),decreasing = F)
+    results     <- list(MCAR = MCAR,MNAR = MNARnew ,MAR = MAR, Excluded_marmnar = numeric(0),ExcludedVar = numeric(0) ,CompleteVar = Miss_Var[[3]])
+    return(results)
+    
+    
+  }else {
+    
+    results <- list(MCAR = MCAR,MNAR = MNAR ,MAR = MAR, Excluded_marmnar = rm_MAR_MNAR , ExcludedVar = Miss_Var[[2]], CompleteVar = Miss_Var[[3]])
+    return(results)
+    
+  }
+  
 }
+
 
 ######### Function No12  ##################################
 
