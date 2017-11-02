@@ -650,7 +650,7 @@ detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ,alpha = 0.05, perce
           Pval <- c(Pval, tail(models,1)[[1]]$p.value)
           
         }else{
-          cat("Variable the MAR_MNAR is excluded: ",MAR_MNAR [i],"percentage % of NAs:",perc.col[i], "\n")
+          cat("Variable the MAR_MNAR is MNAR: ",MAR_MNAR [i],"percentage % of NAs:",perc.col[i], "\n")
           marmnar_mat[is.na(marmnar_mat[,i]),i] <- 0
           # list of exluded variables above 60% missigness
           rm_MAR_MNAR <- c(rm_MAR_MNAR, MAR_MNAR [i])
@@ -673,8 +673,8 @@ detect.MCAR.MNAR.MAR <- function(data ,MissingVar, MAR_MNAR ,alpha = 0.05, perce
   Miss_Var <-  check.miss(data)
   if (percentage >= 0.6){
     ExcludedVar <- Miss_Var[[2]]
-    MNARnew     <- sort(c(MNAR,ExcludedVar,rm_MAR_MNAR),decreasing = F)
-    results     <- list(MCAR = MCAR,MNAR = MNARnew ,MAR = MAR, Excluded_marmnar = numeric(0),ExcludedVar = numeric(0) ,CompleteVar = Miss_Var[[3]])
+    MNARnew     <- sort(c(MNAR,rm_MAR_MNAR),decreasing = F)
+    results     <- list(MCAR = MCAR,MNAR = MNARnew ,MAR = MAR, Excluded_marmnar = numeric(0),ExcludedVar = Miss_Var[[2]] ,CompleteVar = Miss_Var[[3]])
     return(results)
     
     
@@ -757,7 +757,7 @@ select_imputation_method <- function(types){
       
       
     }else if(types[i]== "EX"){
-      methods_names   <- "EX"
+      methods_names   <- "zero"
       
     }
     method_vector <- c(method_vector, methods_names)
